@@ -1,0 +1,29 @@
+{
+  "overview": "Project Build Plus is a comprehensive construction management platform with scheduling, cost control, participant management, compliance, OAC meetings, and a Drawings & Documents module for viewing, uploading, and reviewing project drawings.",
+  "features": [
+    "Drawings & Documents module with type tabs (Photographs, Blueprints, Architect, Construction, CAD, Engineering)",
+    "File upload with progress bar for JPG, PNG, PDF, DWG, DXF files",
+    "Review requests that trigger dashboard notifications and auto-attach to OAC Meeting addendums",
+    "OAC Meeting addendum management with edit and remove options",
+    "Share drawings with all participants and Zoom meetings",
+    "Dashboard notification center for active review requests",
+    "Advanced scheduling with crashing and resource leveling",
+    "Earned Value Management and cash flow curves",
+    "Stripe-powered subscription management with three pricing tiers",
+    "Controller account with feature locks and admin oversight"
+  ],
+  "category": "construction-management",
+  "tags": [
+    "construction",
+    "project-management",
+    "drawings",
+    "documents",
+    "blueprints",
+    "cad-files",
+    "oac-meetings",
+    "participants",
+    "compliance",
+    "scheduling"
+  ],
+  "last_updated": "2026-05-24T09:48:27.083Z"
+}

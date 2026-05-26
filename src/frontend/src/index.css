@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/assets/fonts/SpaceGrotesk.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono.woff2") format("woff2");
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --font-display: Space Grotesk;
+    --font-body: Satoshi;
+    --font-mono: JetBrains Mono;
+    --radius: 0.625rem;
+
+    --background: 0.12 0.008 260;
+    --foreground: 0.92 0.008 260;
+    --card: 0.16 0.008 260;
+    --card-foreground: 0.92 0.008 260;
+    --popover: 0.16 0.008 260;
+    --popover-foreground: 0.92 0.008 260;
+
+    --primary: 0.68 0.18 190;
+    --primary-foreground: 0.12 0.008 260;
+
+    --secondary: 0.22 0.012 260;
+    --secondary-foreground: 0.88 0.008 260;
+    --muted: 0.22 0.012 260;
+    --muted-foreground: 0.55 0.008 260;
+
+    --accent: 0.72 0.16 60;
+    --accent-foreground: 0.12 0.008 260;
+
+    --destructive: 0.58 0.2 22;
+    --destructive-foreground: 0.92 0.008 260;
+
+    --border: 0.26 0.01 260;
+    --input: 0.26 0.01 260;
+    --ring: 0.68 0.18 190;
+
+    --chart-1: 0.68 0.18 190;
+    --chart-2: 0.72 0.16 60;
+    --chart-3: 0.55 0.15 145;
+    --chart-4: 0.65 0.17 25;
+    --chart-5: 0.45 0.1 160;
+
+    --sidebar: 0.16 0.008 260;
+    --sidebar-foreground: 0.92 0.008 260;
+    --sidebar-primary: 0.68 0.18 190;
+    --sidebar-primary-foreground: 0.12 0.008 260;
+    --sidebar-accent: 0.22 0.012 260;
+    --sidebar-accent-foreground: 0.88 0.008 260;
+    --sidebar-border: 0.26 0.01 260;
+    --sidebar-ring: 0.68 0.18 190;
+
+    --safety: 0.65 0.22 130;
+    --safety-foreground: 0.12 0.008 260;
+
+    --step-active: 0.68 0.18 190;
+    --step-completed: 0.65 0.22 130;
+    --step-pending: 0.22 0.012 260;
+    --upload-border: 0.72 0.16 60;
+    --renewal-success: 0.65 0.22 130;
+    --renewal-expiry: 0.58 0.2 22;
+  }
+
+  .dark {
+    --background: 0.12 0.008 260;
+    --foreground: 0.92 0.008 260;
+    --card: 0.16 0.008 260;
+    --card-foreground: 0.92 0.008 260;
+    --popover: 0.16 0.008 260;
+    --popover-foreground: 0.92 0.008 260;
+
+    --primary: 0.68 0.18 190;
+    --primary-foreground: 0.12 0.008 260;
+
+    --secondary: 0.22 0.012 260;
+    --secondary-foreground: 0.88 0.008 260;
+    --muted: 0.22 0.012 260;
+    --muted-foreground: 0.55 0.008 260;
+
+    --accent: 0.72 0.16 60;
+    --accent-foreground: 0.12 0.008 260;
+
+    --destructive: 0.58 0.2 22;
+    --destructive-foreground: 0.92 0.008 260;
+
+    --border: 0.26 0.01 260;
+    --input: 0.26 0.01 260;
+    --ring: 0.68 0.18 190;
+
+    --chart-1: 0.68 0.18 190;
+    --chart-2: 0.72 0.16 60;
+    --chart-3: 0.55 0.15 145;
+    --chart-4: 0.65 0.17 25;
+    --chart-5: 0.45 0.1 160;
+
+    --sidebar: 0.16 0.008 260;
+    --sidebar-foreground: 0.92 0.008 260;
+    --sidebar-primary: 0.68 0.18 190;
+    --sidebar-primary-foreground: 0.12 0.008 260;
+    --sidebar-accent: 0.22 0.012 260;
+    --sidebar-accent-foreground: 0.88 0.008 260;
+    --sidebar-border: 0.26 0.01 260;
+    --sidebar-ring: 0.68 0.18 190;
+
+    --safety: 0.65 0.22 130;
+    --safety-foreground: 0.12 0.008 260;
+
+    --step-active: 0.68 0.18 190;
+    --step-completed: 0.65 0.22 130;
+    --step-pending: 0.22 0.012 260;
+    --upload-border: 0.72 0.16 60;
+    --renewal-success: 0.65 0.22 130;
+    --renewal-expiry: 0.58 0.2 22;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .form-section {
+    @apply space-y-3 rounded-lg border bg-card p-4;
+  }
+  .form-section-header {
+    @apply text-sm font-semibold text-foreground;
+  }
+  .form-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+  .form-input {
+    @apply bg-background text-foreground;
+  }
+  .form-textarea {
+    @apply bg-background text-foreground;
+  }
+  .meeting-card {
+    @apply rounded-lg border bg-card p-4 shadow-subtle transition-smooth hover:bg-muted/40;
+  }
+  .meeting-header {
+    @apply text-foreground;
+  }
+  .meeting-meta {
+    @apply text-muted-foreground;
+  }
+  .meeting-date-time {
+    @apply text-foreground;
+  }
+  .participant-badge {
+    @apply inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground;
+  }
+  .action-item {
+    @apply rounded-md border bg-background p-3;
+  }
+  .copy-to-clipboard {
+    @apply inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20;
+  }
+  .shadow-subtle {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Offline mode: disable interactions in page content */
+.offline-mode main input,
+.offline-mode main textarea,
+.offline-mode main select,
+.offline-mode main button:not([data-ocid="nav.mobile_toggle"]),
+.offline-mode main [role="button"],
+.offline-mode
+  main
+  a[href]:not([data-ocid="nav.link"]):not([data-ocid="nav.mobile_link"]):not(
+    [data-ocid="footer.pitch_breakdown_link"]
+  ) {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+  .export-root {
+    background: white !important;
+    color: black !important;
+  }
+  .section-heading {
+    color: black !important;
+  }
+  .report-table th,
+  .report-table td {
+    color: black !important;
+    border-color: #ccc !important;
+  }
+  .page-break-before {
+    break-before: page;
+  }
+  tr {
+    break-inside: avoid;
+  }
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  color: #111;
+}
+.report-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d1d5db;
+  white-space: nowrap;
+}
+.report-table td {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+.report-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+.report-table tfoot td {
+  background: #eff6ff;
+  font-weight: 700;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #bfdbfe;
+}
+
+.safety-badge {
+  @apply inline-flex items-center rounded-full bg-safety/10 px-2.5 py-0.5 text-xs font-medium text-safety;
+}
+
+.compliance-complete {
+  @apply rounded-md border border-safety/20 bg-safety/5 p-3;
+}
+
+.compliance-pending {
+  @apply rounded-md border border-accent/20 bg-accent/5 p-3;
+}
+
+.compliance-checklist-item {
+  @apply flex items-center gap-2 py-2;
+}
+
+.safety-standards-table {
+  @apply w-full table-auto;
+}
+
+.step-indicator {
+  @apply inline-flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-smooth;
+  border-color: oklch(var(--border));
+}
+
+.step-indicator.active {
+  @apply bg-primary text-primary-foreground;
+  border-color: oklch(var(--step-active));
+}
+
+.step-indicator.completed {
+  @apply bg-safety text-safety-foreground;
+  border-color: oklch(var(--step-completed));
+}
+
+.step-indicator.pending {
+  @apply bg-muted text-muted-foreground;
+  border-color: oklch(var(--step-pending));
+}
+
+.upload-zone {
+  @apply rounded-lg border-2 border-dashed bg-card p-6 text-center transition-smooth;
+  border-color: oklch(var(--border));
+  opacity: 1;
+}
+
+.upload-zone.hover {
+  @apply bg-card;
+  border-color: oklch(var(--upload-border));
+}
+
+.upload-zone.active {
+  @apply bg-accent/10;
+  border-color: oklch(var(--upload-border));
+}
+
+.admin-pending-badge {
+  @apply inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium;
+  color: oklch(var(--accent));
+}
+
+.renewal-card {
+  @apply rounded-lg border bg-card p-4;
+  border-color: oklch(var(--border));
+}
+
+.renewal-card.success {
+  @apply border-safety/40 bg-safety/5;
+  border-color: oklch(var(--renewal-success) / 0.4);
+}
+
+.renewal-card.expiry {
+  @apply border-destructive/40 bg-destructive/5;
+  border-color: oklch(var(--renewal-expiry) / 0.4);
+}
+
+.verification-wizard {
+  @apply space-y-6;
+}
+
+.verification-step {
+  @apply rounded-lg border bg-card p-4;
+  border-color: oklch(var(--border));
+}

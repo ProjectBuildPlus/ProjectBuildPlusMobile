@@ -1,0 +1,1042 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type ZoomSettings = 
+ record {
+   clientId: text;
+   clientSecret: text;
+   fixedZoomLinks: vec record {
+                         text;
+                         text;
+                       };
+ };
+type ZoomMeetingResult = 
+ variant {
+   err: text;
+   ok: record {
+         joinUrl: text;
+         meetingId: text;
+       };
+ };
+type VerificationDocument = 
+ record {
+   adminReviewStatus: text;
+   documentType: text;
+   storageKey: text;
+   stripeVerificationSessionId: opt text;
+   stripeVerificationStatus: text;
+   uploadedAt: int;
+ };
+type UserSubscription = 
+ record {
+   cancelledAt: opt int;
+   chargeScheduledAt: int;
+   currentPlan: SubscriptionTier;
+   status: SubscriptionStatus;
+   stripeCustomerId: opt text;
+   stripePaymentMethodId: opt text;
+   stripeSubscriptionId: opt text;
+   subscriptionExpiresAt: opt int;
+   subscriptionStartAt: opt int;
+   tier: SubscriptionTier;
+   trialStartAt: int;
+   userId: principal;
+ };
+type TrialLink = 
+ record {
+   isActive: bool;
+   slug: text;
+   tier: SubscriptionTier;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type TrackingLevel = 
+ variant {
+   crew;
+   individual;
+ };
+type TimeOffset = int;
+type SubscriptionTier = 
+ variant {
+   tier10year;
+   tier1year;
+   tier5year;
+ };
+type SubscriptionStatus = 
+ variant {
+   active;
+   cancelled;
+   expired;
+   trial;
+ };
+type StandardStatus = 
+ variant {
+   Active;
+   Superseded;
+   Withdrawn;
+ };
+type StandardCategory = 
+ variant {
+   ANSI;
+   IBC;
+   IEEE;
+   NCCER;
+   OSHA;
+ };
+type ShareLink = 
+ record {
+   createdAt: int;
+   id: text;
+   isActive: bool;
+   projectId: text;
+   token: text;
+ };
+type SessionSnapshot = 
+ record {
+   ipAddress: text;
+   isActive: bool;
+   lastActivity: int;
+   "principal": principal;
+   sessionId: text;
+   timestamp: int;
+   userAgent: text;
+ };
+type ScenarioSummary = 
+ record {
+   createdAt: int;
+   description: text;
+   id: ScenarioId;
+   name: text;
+ };
+type ScenarioId = text;
+type ScenarioEVMSummary = 
+ record {
+   actualCost: float64;
+   cpi: float64;
+   cv: float64;
+   earnedValue: float64;
+   plannedValue: float64;
+   scenarioId: ScenarioId;
+   spi: float64;
+   sv: float64;
+ };
+type ScenarioCashProjection = 
+ record {
+   cumulativePoints: vec record {
+                           nat;
+                           float64;
+                         };
+   scenarioId: ScenarioId;
+   scenarioName: text;
+   totalCost: float64;
+ };
+type ScenarioBenchmarkVariance = 
+ record {
+   actualCost: float64;
+   divisionId: nat;
+   divisionName: text;
+   rsMeansCost: float64;
+   scenarioId: ScenarioId;
+   variance: float64;
+   variancePct: float64;
+ };
+type Scenario = 
+ record {
+   createdAt: int;
+   description: text;
+   id: ScenarioId;
+   name: text;
+   participantOverrides: vec ParticipantOverride;
+   phaseOverrides: vec PhaseOverride;
+   updatedAt: int;
+ };
+type SafetyStandard = 
+ record {
+   applicableTrades: vec text;
+   category: StandardCategory;
+   code: text;
+   csiDivisions: vec text;
+   id: text;
+   relatedStandards: vec text;
+   state: opt text;
+   status: StandardStatus;
+   summary: text;
+   title: text;
+ };
+type ReviewRequest = 
+ record {
+   drawingId: text;
+   id: text;
+   notes: text;
+   oacFormId: opt text;
+   requestedAt: int;
+   requestedBy: text;
+   status: text;
+ };
+type Result_4 = 
+ variant {
+   err: text;
+   ok: record {
+         email: text;
+         name: text;
+       };
+ };
+type Result_3 = 
+ variant {
+   err: text;
+   ok: text;
+ };
+type Result_2 = 
+ variant {
+   err: text;
+   ok: record {
+         email: text;
+         name: text;
+         phone: text;
+       };
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok: UserSubscription;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok;
+ };
+type ResourceType = 
+ variant {
+   equipment;
+   labor;
+ };
+type ResourceSummary = 
+ record {
+   idleHoursCrashedBaseline: float64;
+   idleHoursOriginalBaseline: float64;
+   resourceId: text;
+   resourceName: text;
+   totalAllocatedHours: float64;
+   totalAvailableHours: float64;
+   totalIdleHours: float64;
+   totalLaborCost: float64;
+   trackingLevel: TrackingLevel;
+ };
+type ResourceInput = 
+ record {
+   crewSize: opt nat;
+   csiCode: opt text;
+   hourlyRate: float64;
+   hourlyRateSource: text;
+   idleTimeMode: opt IdleTimeMode;
+   name: text;
+   resourceType: ResourceType;
+   trackingLevel: TrackingLevel;
+ };
+type Resource = 
+ record {
+   crewSize: opt nat;
+   csiCode: opt text;
+   hourlyRate: float64;
+   hourlyRateSource: text;
+   id: text;
+   idleTimeMode: IdleTimeMode;
+   name: text;
+   resourceType: ResourceType;
+   trackingLevel: TrackingLevel;
+ };
+type RenewalHistoryEntry = 
+ record {
+   createdAt: int;
+   endDate: int;
+   id: text;
+   monthlyCharge: nat;
+   "principal": principal;
+   startDate: int;
+   status: variant {
+             Cancelled;
+             Failed;
+             Paid;
+             Pending;
+           };
+   tier: SubscriptionTier;
+   totalPaid: nat;
+ };
+type ReminderState = 
+ record {
+   day26Dismissed: bool;
+   day26EmailSent: bool;
+   day28Dismissed: bool;
+   day28EmailSent: bool;
+   "principal": principal;
+ };
+type RSMeansSource = 
+ variant {
+   LiveAPI;
+   ManualEntry;
+   None;
+ };
+type RSMeansSettings = 
+ record {
+   apiEnabled: bool;
+   apiKey: opt text;
+   lastTestStatus: opt text;
+ };
+type ProjectSubtopic = 
+ record {
+   defaultCostCodeDivisions: vec nat;
+   defaultPhases: vec DefaultPhase;
+   id: text;
+   name: text;
+ };
+type ProjectEVMSummary = 
+ record {
+   projectCPI: float64;
+   projectPI: float64;
+   projectSPI: float64;
+   totalAC: float64;
+   totalCV: float64;
+   totalEV: float64;
+   totalPV: float64;
+   totalSV: float64;
+ };
+type ProjectCategory = 
+ record {
+   id: text;
+   name: text;
+   subtopics: vec ProjectSubtopic;
+ };
+type PhaseStandardLink = 
+ record {
+   csiCode: text;
+   id: text;
+   linkedAt: int;
+   linkedBy: text;
+   phaseId: text;
+   standardId: text;
+ };
+type PhaseSignOffShared = 
+ record {
+   approved: bool;
+   comments: text;
+   id: text;
+   phaseId: text;
+   role: text;
+   signedAt: int;
+   signedBy: text;
+ };
+type PhaseOverride = 
+ record {
+   crashFactor: float64;
+   laborCostOverride: opt float64;
+   phaseId: text;
+   resourceMultiplier: float64;
+ };
+type PhaseInput = 
+ record {
+   costCodes: opt vec CostCodeInput;
+   crashFactor: opt float64;
+   endOffset: TimeOffset;
+   name: text;
+   phaseOrder: nat;
+   requiredCash: float64;
+   resourceMultiplier: opt float64;
+   scheduleOfValues: float64;
+   startOffset: TimeOffset;
+ };
+type PhaseId = nat;
+type PhaseComplianceSummary = 
+ record {
+   compliant: nat;
+   nonCompliant: nat;
+   notApplicable: nat;
+   phaseId: text;
+   signedOff: bool;
+   total: nat;
+ };
+type PhaseAllocationInput = 
+ record {
+   actualHours: opt float64;
+   allocatedHours: float64;
+   availableHours: float64;
+   laborCostSource: text;
+   manualLaborCost: opt float64;
+   phaseId: text;
+   resourceId: text;
+ };
+type PhaseAllocation = 
+ record {
+   actualHours: opt float64;
+   allocatedHours: float64;
+   availableHours: float64;
+   id: text;
+   laborCostSource: text;
+   manualLaborCost: opt float64;
+   phaseId: text;
+   resourceId: text;
+ };
+type Phase = 
+ record {
+   costCodes: vec CostCode;
+   crashFactor: float64;
+   endOffset: TimeOffset;
+   id: PhaseId;
+   name: text;
+   phaseOrder: nat;
+   requiredCash: float64;
+   resourceMultiplier: float64;
+   scheduleOfValues: float64;
+   startOffset: TimeOffset;
+ };
+type PayoutRecord = 
+ record {
+   amount: float64;
+   date: text;
+   status: text;
+ };
+type PaymentMethodInfo = 
+ record {
+   brand: text;
+   expMonth: nat;
+   expYear: nat;
+   isDefault: bool;
+   last4: text;
+   paymentMethodId: text;
+ };
+type ParticipantStatus = 
+ variant {
+   Approved;
+   Pending;
+   Rejected;
+ };
+type ParticipantRole = 
+ variant {
+   Architect;
+   CivilEngineer;
+   ConstructionManager;
+   Contractor;
+   Designer;
+   EHSRepresentative;
+   MechanicalEngineer;
+   Owner;
+   SafetyEngineer;
+   SafetyInspector;
+   SpecialtyEngineer;
+ };
+type ParticipantOverride = 
+ record {
+   costCodeAssignments: vec text;
+   newRole: opt text;
+   participantId: text;
+   phaseAssignments: vec text;
+ };
+type ParticipantAssignment = 
+ record {
+   actualCost: opt float64;
+   costCodeId: text;
+   participantId: text;
+   phaseId: text;
+   rsMeansCrewRate: opt float64;
+   rsMeansEquipmentRate: opt float64;
+   rsMeansLaborRate: opt float64;
+   rsMeansMaterialRate: opt float64;
+   rsMeansSource: RSMeansSource;
+   rsMeansUnitCost: opt float64;
+   variance: opt float64;
+ };
+type Participant = 
+ record {
+   companyAddress: text;
+   companyName: text;
+   companyTrade: text;
+   createdAt: int;
+   email: text;
+   fullName: text;
+   id: text;
+   mobilePhone: text;
+   notes: text;
+   officePhone: text;
+   passcode: opt text;
+   passcodeEmailSent: bool;
+   residentialAddress: text;
+   role: ParticipantRole;
+   status: ParticipantStatus;
+ };
+type OACMeetingSession = 
+ record {
+   createdAt: int;
+   id: text;
+   linkedCategoryId: opt text;
+   projectId: text;
+   sessionDate: text;
+   sessionTime: text;
+   zoomLink: opt text;
+   zoomMeetingId: opt text;
+ };
+type NCCERCertStatus = 
+ variant {
+   Current;
+   Expired;
+   Expiring;
+ };
+type NCCERCertShared = 
+ record {
+   certNumber: text;
+   discipline: text;
+   expiresAt: int;
+   id: text;
+   issuedAt: int;
+   level: text;
+   participantId: text;
+   state: text;
+   status: NCCERCertStatus;
+   trade: text;
+ };
+type MeetingPackage = 
+ record {
+   date: text;
+   link: text;
+   participants: vec text;
+   time: text;
+ };
+type IdleTimeSetting = 
+ record {
+   defaultIdleMode: IdleTimeMode;
+   projectId: text;
+ };
+type IdleTimeMode = 
+ variant {
+   holdThroughProject;
+   releaseAtPhaseEnd;
+ };
+type FormType = 
+ variant {
+   Addendum;
+   G701;
+   G702;
+   G703;
+   MeetingMinutes;
+ };
+type FeatureLockSnapshot = 
+ record {
+   compliance: bool;
+   cost: bool;
+   documents: bool;
+   oacMeetings: bool;
+   participants: bool;
+   resources: bool;
+   scheduling: bool;
+   subscriptions: bool;
+ };
+type EVMPoint = 
+ record {
+   actualCost: float64;
+   baselineType: BaselineType;
+   costVariance: float64;
+   cpi: float64;
+   customProductivityIndex: opt float64;
+   earnedValue: float64;
+   phaseId: nat;
+   phaseName: text;
+   phaseOrder: nat;
+   plannedValue: float64;
+   productivityIndex: float64;
+   scheduleVariance: float64;
+   spi: float64;
+ };
+type DrawingNotification = 
+ record {
+   dismissed: bool;
+   drawingId: text;
+   drawingName: text;
+   id: text;
+   requestedAt: int;
+   requestedBy: text;
+ };
+type DrawingFileType = 
+ variant {
+   DWG;
+   DXF;
+   JPG;
+   PDF;
+   PNG;
+ };
+type DrawingCategory = 
+ variant {
+   ArchitectDrawings;
+   Blueprints;
+   CADFiles;
+   ConstructionDrawings;
+   EngineeringDrawings;
+   Photographs;
+ };
+type Drawing = 
+ record {
+   category: DrawingCategory;
+   description: text;
+   fileType: DrawingFileType;
+   id: text;
+   name: text;
+   storageKey: text;
+   uploadedAt: int;
+   uploadedBy: text;
+ };
+type DefaultPhase = 
+ record {
+   csiDivisions: vec nat;
+   durationDays: nat;
+   name: text;
+   order: nat;
+ };
+type CumulativePointWithCodes = 
+ record {
+   breakdown: vec CostCodeBreakdown;
+   crashedCash: float64;
+   cumulativeCash: float64;
+   cumulativeSOV: float64;
+   endOffset: TimeOffset;
+   phaseName: text;
+   phaseOrder: nat;
+ };
+type CumulativePoint = 
+ record {
+   crashedCash: float64;
+   cumulativeCash: float64;
+   cumulativeSOV: float64;
+   endOffset: TimeOffset;
+   phaseName: text;
+   phaseOrder: nat;
+ };
+type CriticalPlanStatus = 
+ variant {
+   Approved;
+   Draft;
+   PendingApproval;
+   Rejected;
+ };
+type CriticalPlanApproval = 
+ record {
+   approved: bool;
+   approvedAt: int;
+   approvedBy: text;
+   id: text;
+   planId: text;
+   role: text;
+ };
+type CriticalPathNode = 
+ record {
+   earlyFinish: float64;
+   earlyStart: float64;
+   isCritical: bool;
+   lateFinish: float64;
+   lateStart: float64;
+   phaseId: text;
+   phaseName: text;
+   totalSlack: float64;
+ };
+type CriticalChangePlanShared = 
+ record {
+   affectedStandardIds: vec text;
+   controlMeasures: text;
+   createdAt: int;
+   createdBy: text;
+   csiCodes: vec text;
+   hazardAnalysis: text;
+   id: text;
+   name: text;
+   phaseIds: vec text;
+   responsibleParticipantIds: vec text;
+   status: CriticalPlanStatus;
+ };
+type CreateScenarioRequest = 
+ record {
+   description: text;
+   name: text;
+   participantOverrides: vec ParticipantOverride;
+   phaseOverrides: vec PhaseOverride;
+ };
+type CostCode__1 = 
+ record {
+   area: text;
+   cost: float64;
+   csiCode: text;
+   csiDivision: text;
+   distribution: text;
+   id: CostCodeId;
+   operation: text;
+   phaseId: nat;
+   projectNumber: text;
+ };
+type CostCodeInput = 
+ record {
+   area: text;
+   cost: float64;
+   csiCode: text;
+   csiDivision: text;
+   distribution: text;
+   operation: text;
+   projectNumber: text;
+ };
+type CostCodeId = nat;
+type CostCodeBreakdown = 
+ record {
+   csiCode: text;
+   csiDivision: text;
+   cumulativeCost: float64;
+ };
+type CostCode = 
+ record {
+   area: text;
+   cost: float64;
+   csiCode: text;
+   csiDivision: text;
+   distribution: text;
+   id: nat;
+   operation: text;
+   phaseId: nat;
+   projectNumber: text;
+ };
+type ComplianceStatus = 
+ variant {
+   Compliant;
+   NA;
+   NonCompliant;
+ };
+type ComplianceSeverity = 
+ variant {
+   Critical;
+   Major;
+   Minor;
+   None;
+ };
+type ComplianceItemShared = 
+ record {
+   checkedAt: int;
+   checkedBy: text;
+   id: text;
+   notes: text;
+   phaseId: text;
+   severity: ComplianceSeverity;
+   standardId: text;
+   status: ComplianceStatus;
+ };
+type CPMPhaseInput = 
+ record {
+   dependencies: vec text;
+   endOffset: float64;
+   id: text;
+   name: text;
+   startOffset: float64;
+ };
+type BaselineType = 
+ variant {
+   crashed;
+   original;
+ };
+type BankAccount = 
+ record {
+   accountHolderName: text;
+   accountNumberLast4: text;
+   connectedToStripe: bool;
+   isVerified: bool;
+   nextPayoutDate: opt text;
+   routingNumber: text;
+ };
+type ApplyTemplateResult = 
+ variant {
+   err: text;
+   ok: record {phasesCreated: nat;};
+ };
+type AppSettings = 
+ record {
+   accessControlMode: AccessControlMode;
+   activeCategoryId: opt text;
+   activeSubtopicId: opt text;
+   projectManagerId: opt text;
+   rsMeansSettings: RSMeansSettings;
+ };
+type AdminRole = 
+ record {
+   assignedAt: int;
+   assignedBy: principal;
+   assignedPrincipal: principal;
+ };
+type AccessControlMode = 
+ variant {
+   ProjectManagerOnly;
+   RoleGated;
+ };
+type AIAFormEntry = 
+ record {
+   fieldData: vec record {
+                    text;
+                    text;
+                  };
+   formType: FormType;
+   id: text;
+   lastModified: int;
+   sessionId: text;
+   submittedAt: int;
+   submittedByRole: text;
+ };
+service : {
+  activateSubscription: (stripeSubscriptionId: text) -> (Result_1);
+  addDrawing: (name: text, category: DrawingCategory, fileType:
+   DrawingFileType, storageKey: text, description: text) -> (Drawing);
+  addNCCERCertification: (participantId: text, trade: text, discipline: 
+   text, level: text, state: text, certNumber: text, issuedAt: int,
+   expiresAt: int) -> (NCCERCertShared);
+  addPaymentMethod: (setupIntentId: text) -> (Result_1);
+  addRenewalHistoryEntry: (entry: RenewalHistoryEntry) -> (Result);
+  applyProjectTemplate: (categoryId: text, subtopicId: text) ->
+   (ApplyTemplateResult);
+  approveCriticalChangePlan: (planId: text, approved: bool) ->
+   (CriticalPlanApproval);
+  approveDocumentReview: (user: principal, documentType: text) -> (Result);
+  approveParticipant: (id: text) -> (opt Participant);
+  assignAdmin: (p: principal) -> (Result);
+  assignParticipantToPhaseCode: (assignment: ParticipantAssignment) ->
+   (ParticipantAssignment);
+  autoLinkStandardsForCategory: (projectCategory: text, projectSubtype: 
+   text, state: opt text) -> (vec text);
+  canAccessCompliance: (role: ParticipantRole) -> (bool) query;
+  canManageCriticalPlans: (role: ParticipantRole) -> (bool) query;
+  cancelTrial: () -> (Result);
+  changePassword: (email: text, currentPassword: text, newPassword: text) ->
+   (Result);
+  /// One-time claim: the first caller who finds _controller == anonymous
+  /// principal becomes the permanent controller.  Secure because the
+  /// deployer is the only one who can call this before any user interaction.
+  claimController: () -> (Result);
+  compareScenarios: (ids: vec text) -> (vec ScenarioCashProjection) query;
+  computeCriticalPath: (phases: vec CPMPhaseInput) ->
+   (vec CriticalPathNode) query;
+  computeResourceSummaries: (originalBaselineMultiplier: float64,
+   crashedBaselineMultiplier: float64) -> (vec ResourceSummary) query;
+  createCriticalChangePlan: (name: text, phaseIds: vec text, csiCodes:
+   vec text, hazardAnalysis: text, controlMeasures: text,
+   affectedStandardIds: vec text, responsibleParticipantIds: vec text) ->
+   (CriticalChangePlanShared);
+  createOACSession: (date: text, time: text) -> (text);
+  createParticipant: (participant: Participant) -> (Participant);
+  createReviewRequest: (drawingId: text, notes: text) ->
+   (opt record {
+          ReviewRequest;
+          DrawingNotification;
+        });
+  createScenario: (req: CreateScenarioRequest) ->
+   (variant {
+      err: text;
+      ok: Scenario;
+    });
+  deactivateShareLink: (token: text) -> (bool);
+  deleteCostCode: (phaseId: nat, codeId: nat) -> (variant {
+                                                    err: text;
+                                                    ok;
+                                                  });
+  deleteDrawing: (id: text) -> (bool);
+  deleteParticipant: (id: text) -> (bool);
+  deletePhase: (phaseId: nat) -> (bool);
+  deletePhaseAllocation: (id: text) -> (bool);
+  deleteResource: (id: text) -> (bool);
+  deleteReviewRequest: (id: text) -> (bool);
+  deleteScenario: (id: text) -> (variant {
+                                   err: text;
+                                   ok;
+                                 });
+  dismissDrawingNotification: (id: text) -> (bool);
+  dismissReminder: (day: nat) -> ();
+  emailLogin: (email: text, password: text, userAgent: text, ipAddress:
+   text) -> (Result_4);
+  endSession: (sessionId: text) -> ();
+  enrollTrial: (tier: SubscriptionTier, stripeCustomerId: text,
+   stripePaymentMethodId: text) -> (Result_1);
+  expireSubscription: () -> (Result);
+  fetchRSMeansBenchmarks: (csiDivision: text) -> (text);
+  generateResetCode: (email: text) -> (Result_3);
+  generateShareLink: (projectId: text) -> (ShareLink);
+  generateZoomMeeting: (sessionId: text, topic: text) -> (ZoomMeetingResult);
+  getAIAForm: (formId: text) -> (opt AIAFormEntry) query;
+  getAIAForms: (sessionId: text) -> (vec AIAFormEntry) query;
+  getActiveFilter: () -> (opt text, opt text) query;
+  getActiveSessions: () -> (vec SessionSnapshot) query;
+  getAdminList: () -> (vec AdminRole) query;
+  getAppSettings: () -> (AppSettings) query;
+  getBankAccount: () -> (opt BankAccount) query;
+  getCertificationsForPhase: (phaseId: text) -> (vec NCCERCertShared) query;
+  getComplianceItemsForPhase: (phaseId: text) ->
+   (vec ComplianceItemShared) query;
+  getControllerProfile: () -> (Result_2) query;
+  getCostCodeCompletion: (phaseId: nat, codeId: nat) -> (opt float64) query;
+  getCostCodesForPhase: (phaseId: nat) ->
+   (variant {
+      err: text;
+      ok: vec CostCode__1;
+    }) query;
+  getCriticalChangePlansForPhase: (phaseId: text) ->
+   (vec CriticalChangePlanShared) query;
+  getCumulativeCashRequirement: () -> (vec CumulativePoint) query;
+  getCumulativeCrashedRequirement: () -> (vec CumulativePoint) query;
+  getCumulativeWithBreakdown: () -> (vec CumulativePointWithCodes) query;
+  getDocumentReviewStatus: () -> (vec VerificationDocument) query;
+  getDrawingNotifications: () -> (vec DrawingNotification) query;
+  getDrawings: () -> (vec Drawing) query;
+  getEarnedValueMetrics: (baselineType: BaselineType) -> (vec EVMPoint) query;
+  getFeatureLocks: () -> (FeatureLockSnapshot) query;
+  getFilteredStandards: (projectCategory: text, projectSubtype: text, state:
+   opt text) -> (vec SafetyStandard) query;
+  getIdleTimeSetting: () -> (opt IdleTimeSetting) query;
+  getLoginHistory: () -> (vec SessionSnapshot) query;
+  getNCCERCertificationsForParticipant: (participantId: text) ->
+   (vec NCCERCertShared) query;
+  getNextPayoutDate: () -> (opt text) query;
+  getOACSession: (id: text) -> (opt OACMeetingSession) query;
+  getOACSessions: () -> (vec OACMeetingSession) query;
+  getParticipant: (id: text) -> (opt Participant) query;
+  getParticipantAssignments: (participantId: text) ->
+   (vec ParticipantAssignment) query;
+  getParticipantMeetingPackage: (sessionId: text) -> (MeetingPackage) query;
+  getParticipants: () -> (vec Participant) query;
+  getPaymentMethods: () -> (vec PaymentMethodInfo) query;
+  getPayoutRecords: () -> (vec PayoutRecord) query;
+  getPhaseAllocations: () -> (vec PhaseAllocation) query;
+  getPhaseAllocationsByPhase: (phaseId: text) -> (vec PhaseAllocation) query;
+  getPhaseAllocationsByResource: (resourceId: text) ->
+   (vec PhaseAllocation) query;
+  getPhaseComplianceStatus: (phaseId: text) -> (PhaseComplianceSummary) query;
+  getPhases: () -> (vec Phase) query;
+  getProjectCategories: () -> (vec ProjectCategory) query;
+  getProjectEVMSummary: (baselineType: BaselineType) ->
+   (ProjectEVMSummary) query;
+  getProjectShareLinks: (projectId: text) -> (vec ShareLink) query;
+  getProjectSubtopic: (categoryId: text, subtopicId: text) ->
+   (opt ProjectSubtopic) query;
+  getRSMeansSettings: () -> (RSMeansSettings) query;
+  getReminderState: () -> (opt ReminderState) query;
+  getRenewalHistory: () -> (vec RenewalHistoryEntry) query;
+  getResources: () -> (vec Resource) query;
+  getResourcesByType: (resourceType: ResourceType) -> (vec Resource) query;
+  getReviewRequests: () -> (vec ReviewRequest) query;
+  getScenario: (id: text) -> (opt Scenario) query;
+  getScenarioBenchmarkVariances: (id: text) ->
+   (vec ScenarioBenchmarkVariance) query;
+  getScenarioCashProjection: (id: text) -> (opt ScenarioCashProjection) query;
+  getScenarioEVMSummary: (id: text) -> (opt ScenarioEVMSummary) query;
+  getShareLink: (token: text) -> (opt ShareLink) query;
+  getSignOffsForPhase: (phaseId: text) -> (vec PhaseSignOffShared) query;
+  getStandard: (id: text) -> (opt SafetyStandard) query;
+  getStandardsForCsiCode: (csiCode: text) -> (vec SafetyStandard) query;
+  getStandardsForPhase: (phaseId: text) -> (vec SafetyStandard) query;
+  getSubscriptionStatus: () -> (SubscriptionStatus) query;
+  getTrialLinks: () -> (vec TrialLink) query;
+  getUserSubscription: () -> (opt UserSubscription) query;
+  getZoomSettings: () -> (opt ZoomSettings) query;
+  isAdmin: (p: principal) -> (bool) query;
+  isController: (p: principal) -> (bool) query;
+  isPhaseSignedOff: (phaseId: text) -> (bool) query;
+  isPlanFullyApproved: (planId: text) -> (bool) query;
+  linkStandardToPhase: (phaseId: text, csiCode: text, standardId: text) ->
+   (PhaseStandardLink);
+  listScenarios: () -> (vec ScenarioSummary) query;
+  registerEmailUser: (email: text, password: text, name: text, phone:
+   text) -> (Result);
+  rejectParticipant: (id: text) -> (opt Participant);
+  removeParticipantAssignment: (participantId: text, phaseId: text,
+   costCodeId: text) -> (bool);
+  renewSubscription: () -> (Result_1);
+  resendPasscode: (id: text) -> (bool);
+  revokeAdmin: (p: principal) -> (Result);
+  saveAIAForm: (sessionId: text, formType: FormType, fieldData:
+   vec record {
+         text;
+         text;
+       }, submittedByRole: text) -> (text);
+  saveAppSettings: (settings: AppSettings) -> (AppSettings);
+  saveBankAccount: (holderName: text, accountNumberLast4: text,
+   routingNumber: text) -> ();
+  savePayoutRecords: (records: vec PayoutRecord) -> ();
+  saveRSMeansSettings: (settings: RSMeansSettings) -> (RSMeansSettings);
+  saveZoomSettings: (settings: ZoomSettings) -> (bool);
+  searchStandards: (searchText: text, category: opt StandardCategory, state:
+   opt text) -> (vec SafetyStandard) query;
+  setActiveFilter: (categoryId: opt text, subtopicId: opt text) -> ();
+  setFeatureLock: (feature: text, locked: bool) -> (variant {
+                                                      err: text;
+                                                      ok;
+                                                    });
+  setFixedZoomLink: (roleId: text, zoomLink: text) -> (bool);
+  setIdleTimeSetting: (mode: IdleTimeMode) -> (IdleTimeSetting);
+  setNextPayoutDate: (date: text) -> ();
+  setPhases: (inputs: vec PhaseInput) -> ();
+  setReminderEmailSent: (day: nat) -> ();
+  setStripeSecretKey: (secretKey: text) -> ();
+  submitDocumentForReview: (documentType: text, storageKey: text,
+   stripeSessionId: opt text) -> (VerificationDocument);
+  /// One-time claim: the first caller who finds _controller == anonymous
+  /// principal becomes the permanent controller.  Secure because the
+  /// deployer is the only one who can call this before any user interaction.
+  submitPhaseSignOff: (phaseId: text, approved: bool, comments: text) ->
+   (PhaseSignOffShared);
+  submitPlanForApproval: (id: text) -> (opt CriticalChangePlanShared);
+  switchTrialTier: (newTier: SubscriptionTier) -> (Result_1);
+  testRSMeansConnection: () -> (text);
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  unlinkStandardFromPhase: (phaseId: text, csiCode: text, standardId:
+   text) -> (bool);
+  updateAIAForm: (formId: text, fieldData: vec record {
+                                                 text;
+                                                 text;
+                                               }) -> (bool);
+  updateControllerProfile: (name: text, email: text, phone: text) -> (Result);
+  updateCostCodeCompletion: (phaseId: nat, codeId: nat, percentComplete:
+   float64) -> ();
+  updateCriticalChangePlan: (id: text, name: opt text, phaseIds:
+   opt vec text, csiCodes: opt vec text, hazardAnalysis: opt text,
+   controlMeasures: opt text, affectedStandardIds: opt vec text,
+   responsibleParticipantIds: opt vec text) -> (opt CriticalChangePlanShared);
+  updateNCCERCertification: (id: text, trade: opt text, discipline: opt text,
+   level: opt text, certNumber: opt text, issuedAt: opt int, expiresAt:
+   opt int, status: opt NCCERCertStatus) -> (opt NCCERCertShared);
+  updateOACSessionZoomLink: (sessionId: text, zoomLink: text, zoomMeetingId:
+   text) -> (bool);
+  updateParticipant: (updated: Participant) -> (opt Participant);
+  updateRSMeansEntry: (participantId: text, phaseId: text, costCodeId: 
+   text, updated: ParticipantAssignment) -> (opt ParticipantAssignment);
+  updateReviewRequest: (id: text, status: text, notes: text) ->
+   (opt ReviewRequest);
+  updateScenario: (id: text, req: CreateScenarioRequest) ->
+   (variant {
+      err: text;
+      ok: Scenario;
+    });
+  upsertComplianceItem: (phaseId: text, standardId: text, status:
+   ComplianceStatus, severity: ComplianceSeverity, notes: text) ->
+   (ComplianceItemShared);
+  upsertCostCode: (phaseId: nat, input: CostCodeInput) ->
+   (variant {
+      err: text;
+      ok: CostCode__1;
+    });
+  upsertPhase: (phaseId: nat, input: PhaseInput) -> (Phase);
+  upsertPhaseAllocation: (input: PhaseAllocationInput) -> (PhaseAllocation);
+  upsertResource: (input: ResourceInput) -> (Resource);
+  validateResetCode: (email: text, code: text, newPassword: text) -> (Result);
+  zoomTransform: (input: TransformationInput) -> (TransformationOutput) query;
+}
