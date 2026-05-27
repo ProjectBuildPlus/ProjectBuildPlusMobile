@@ -4,15 +4,17 @@ import Types   "../types/auth";
 import AuthLib "../lib/auth";
 import Principal "mo:core/Principal";
 import List "mo:core/List";
+import Runtime "mo:core/Runtime";
 
 /// AuthApi mixin — email+password login, registration, password reset,
-/// controller profile management, and session tracking.
+/// controller profile management, session tracking, and email-only login.
 mixin (
   users               : Map.Map<Text, Types.UserRecord>,
   resetCodes          : Map.Map<Text, Types.ResetCodeEntry>,
   controllerProfile   : Types.ControllerProfile,
   controllerPrincipal : Principal,
   loginSessions       : Map.Map<Principal, List.List<Types.SessionEntry>>,
+  loginEmails         : List.List<Text>,
 ) {
 
   /// Register a new email+password account.
@@ -141,4 +143,110 @@ mixin (
     AuthLib.endSession(loginSessions, caller, sessionId);
   };
 
+  // ─── Email-only login ─────────────────────────────────────────────────────
+
+  /// Log in with an email address only — no password or verification code required.
+  /// Works for the primary controller email and any additional registered login emails.
+  public shared func emailOnlyLogin(
+    email : Text,
+  ) : async Result.Result<Text, Text> {
+    AuthLib.emailOnlyLogin(email, loginEmails);
+  };
+
+  /// Add an extra login email (controller-only). Effective immediately.
+  public shared ({ caller }) func addLoginEmail(
+    newEmail : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      return #err("Only the app controller may add login emails");
+    };
+    AuthLib.addLoginEmail(loginEmails, newEmail);
+  };
+
+  /// Remove a login email (controller-only). Cannot remove the primary email.
+  public shared ({ caller }) func removeLoginEmail(
+    email : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      return #err("Only the app controller may remove login emails");
+    };
+    AuthLib.removeLoginEmail(loginEmails, email);
+  };
+
+  /// Return all registered login emails (primary + additional), controller-only.
+  public shared query ({ caller }) func getLoginEmails() : async Result.Result<[Text], Text> {
+    if (caller != controllerPrincipal) {
+      return #err("Only the app controller may view login emails");
+    };
+    let all = List.empty<Text>();
+    all.add("pwarre12@mail.ccsf.edu");
+    for (e in loginEmails.values()) {
+      all.add(e);
+    };
+    #ok(all.toArray());
+  };
+
+  /// Change the controller's password (controller-only).
+  public shared ({ caller }) func changeControllerPassword(
+    newPassword : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      return #err("Only the app controller may change the controller password");
+    };
+    AuthLib.changeControllerPassword(controllerProfile, newPassword);
+  };
+
+  // ─── Controller-managed user operations ──────────────────────────────
+
+  /// Controller-only: return all registered users (email, name, lastLogin, createdAt).
+  public shared query ({ caller }) func getAllUsers()
+    : async [{ email : Text; name : Text; lastLogin : Int; createdAt : Int }]
+  {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    AuthLib.getAllUsers(users);
+  };
+
+  /// Controller-only: generate a reset code for any registered user by email.
+  /// Returns the code as Text for the controller to relay manually.
+  public shared ({ caller }) func generateUserResetCode(
+    email : Text,
+  ) : async Result.Result<Text, Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    AuthLib.generateUserResetCode(users, resetCodes, email);
+  };
+
+  /// Controller-only: add a login email for any user account.
+  public shared ({ caller }) func addUserLoginEmail(
+    targetEmail : Text,
+    newEmail    : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    AuthLib.addUserLoginEmail(users, loginEmails, newEmail);
+  };
+
+  /// Controller-only: remove a login email. Min 1 email must remain.
+  public shared ({ caller }) func removeUserLoginEmail(
+    email : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    AuthLib.removeUserLoginEmail(loginEmails, email);
+  };
+
+  /// Controller-only: return all login emails for the login email list.
+  public shared query ({ caller }) func getUserLoginEmails(
+    _targetEmail : Text,
+  ) : async [Text] {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    AuthLib.getUserLoginEmails(loginEmails);
+  };
 };

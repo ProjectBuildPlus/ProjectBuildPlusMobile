@@ -29,11 +29,7 @@ export interface ProjectEVMSummary {
 }
 export type Result_2 = {
     __kind__: "ok";
-    ok: {
-        name: string;
-        email: string;
-        phone: string;
-    };
+    ok: CancellationRequest;
 } | {
     __kind__: "err";
     err: string;
@@ -100,6 +96,13 @@ export type ZoomMeetingResult = {
     __kind__: "err";
     err: string;
 };
+export type Result_5 = {
+    __kind__: "ok";
+    ok: string;
+} | {
+    __kind__: "err";
+    err: string;
+};
 export interface ProjectCategory {
     id: string;
     name: string;
@@ -130,6 +133,7 @@ export type Result_4 = {
     ok: {
         name: string;
         email: string;
+        phone: string;
     };
 } | {
     __kind__: "err";
@@ -218,6 +222,16 @@ export interface FeatureLockSnapshot {
     compliance: boolean;
     oacMeetings: boolean;
 }
+export type Result_6 = {
+    __kind__: "ok";
+    ok: {
+        name: string;
+        email: string;
+    };
+} | {
+    __kind__: "err";
+    err: string;
+};
 export type PhaseId = bigint;
 export interface SessionSnapshot {
     principal: Principal;
@@ -426,12 +440,13 @@ export interface CostCodeInput {
     distribution: string;
     csiDivision: string;
 }
-export interface AppSettings {
-    activeCategoryId?: string;
-    projectManagerId?: string;
-    rsMeansSettings: RSMeansSettings;
-    activeSubtopicId?: string;
-    accessControlMode: AccessControlMode;
+export interface CancellationRequest {
+    id: string;
+    status: CancellationRequestStatus;
+    email: string;
+    subscriberPrincipal: Principal;
+    requestedAt: bigint;
+    reason: string;
 }
 export interface PhaseOverride {
     crashFactor: number;
@@ -442,6 +457,13 @@ export interface PhaseOverride {
 export interface IdleTimeSetting {
     defaultIdleMode: IdleTimeMode;
     projectId: string;
+}
+export interface AppSettings {
+    activeCategoryId?: string;
+    projectManagerId?: string;
+    rsMeansSettings: RSMeansSettings;
+    activeSubtopicId?: string;
+    accessControlMode: AccessControlMode;
 }
 export type Result_1 = {
     __kind__: "ok";
@@ -550,7 +572,7 @@ export interface CPMPhaseInput {
 }
 export type Result_3 = {
     __kind__: "ok";
-    ok: string;
+    ok: Array<string>;
 } | {
     __kind__: "err";
     err: string;
@@ -590,7 +612,9 @@ export interface DrawingNotification {
 }
 export interface UserSubscription {
     status: SubscriptionStatus;
+    frozenReason?: string;
     trialStartAt: bigint;
+    frozenAt?: bigint;
     stripeSubscriptionId?: string;
     userId: Principal;
     subscriptionStartAt?: bigint;
@@ -621,6 +645,11 @@ export enum AccessControlMode {
 export enum BaselineType {
     crashed = "crashed",
     original = "original"
+}
+export enum CancellationRequestStatus {
+    pending = "pending",
+    denied = "denied",
+    approved = "approved"
 }
 export enum ComplianceSeverity {
     None = "None",
@@ -713,7 +742,8 @@ export enum SubscriptionStatus {
     trial = "trial",
     active = "active",
     cancelled = "cancelled",
-    expired = "expired"
+    expired = "expired",
+    frozen = "frozen"
 }
 export enum SubscriptionTier {
     tier10year = "tier10year",
@@ -733,10 +763,13 @@ export enum Variant_Failed_Paid_Cancelled_Pending {
 export interface backendInterface {
     activateSubscription(stripeSubscriptionId: string): Promise<Result_1>;
     addDrawing(name: string, category: DrawingCategory, fileType: DrawingFileType, storageKey: string, description: string): Promise<Drawing>;
+    addLoginEmail(newEmail: string): Promise<Result>;
     addNCCERCertification(participantId: string, trade: string, discipline: string, level: string, state: string, certNumber: string, issuedAt: bigint, expiresAt: bigint): Promise<NCCERCertShared>;
     addPaymentMethod(setupIntentId: string): Promise<Result_1>;
     addRenewalHistoryEntry(entry: RenewalHistoryEntry): Promise<Result>;
+    addUserLoginEmail(targetEmail: string, newEmail: string): Promise<Result>;
     applyProjectTemplate(categoryId: string, subtopicId: string): Promise<ApplyTemplateResult>;
+    approveCancellationRequest(requestId: string): Promise<Result>;
     approveCriticalChangePlan(planId: string, approved: boolean): Promise<CriticalPlanApproval>;
     approveDocumentReview(user: Principal, documentType: string): Promise<Result>;
     approveParticipant(id: string): Promise<Participant | null>;
@@ -746,6 +779,7 @@ export interface backendInterface {
     canAccessCompliance(role: ParticipantRole): Promise<boolean>;
     canManageCriticalPlans(role: ParticipantRole): Promise<boolean>;
     cancelTrial(): Promise<Result>;
+    changeControllerPassword(newPassword: string): Promise<Result>;
     changePassword(email: string, currentPassword: string, newPassword: string): Promise<Result>;
     /**
      * / One-time claim: the first caller who finds _controller == anonymous
@@ -788,26 +822,38 @@ export interface backendInterface {
         __kind__: "err";
         err: string;
     }>;
+    denyCancellationRequest(requestId: string): Promise<Result>;
+    directCancelSubscription(target: Principal): Promise<Result>;
     dismissDrawingNotification(id: string): Promise<boolean>;
     dismissReminder(day: bigint): Promise<void>;
-    emailLogin(email: string, password: string, userAgent: string, ipAddress: string): Promise<Result_4>;
+    emailLogin(email: string, password: string, userAgent: string, ipAddress: string): Promise<Result_6>;
+    emailOnlyLogin(email: string): Promise<Result_5>;
     endSession(sessionId: string): Promise<void>;
     enrollTrial(tier: SubscriptionTier, stripeCustomerId: string, stripePaymentMethodId: string): Promise<Result_1>;
     expireSubscription(): Promise<Result>;
     fetchRSMeansBenchmarks(csiDivision: string): Promise<string>;
-    generateResetCode(email: string): Promise<Result_3>;
+    freezeSubscription(target: Principal, reason: string): Promise<Result>;
+    generateResetCode(email: string): Promise<Result_5>;
     generateShareLink(projectId: string): Promise<ShareLink>;
+    generateUserResetCode(email: string): Promise<Result_5>;
     generateZoomMeeting(sessionId: string, topic: string): Promise<ZoomMeetingResult>;
     getAIAForm(formId: string): Promise<AIAFormEntry | null>;
     getAIAForms(sessionId: string): Promise<Array<AIAFormEntry>>;
     getActiveFilter(): Promise<[string | null, string | null]>;
     getActiveSessions(): Promise<Array<SessionSnapshot>>;
     getAdminList(): Promise<Array<AdminRole>>;
+    getAllCancellationRequests(): Promise<Array<CancellationRequest>>;
+    getAllUsers(): Promise<Array<{
+        name: string;
+        createdAt: bigint;
+        email: string;
+        lastLogin: bigint;
+    }>>;
     getAppSettings(): Promise<AppSettings>;
     getBankAccount(): Promise<BankAccount | null>;
     getCertificationsForPhase(phaseId: string): Promise<Array<NCCERCertShared>>;
     getComplianceItemsForPhase(phaseId: string): Promise<Array<ComplianceItemShared>>;
-    getControllerProfile(): Promise<Result_2>;
+    getControllerProfile(): Promise<Result_4>;
     getCostCodeCompletion(phaseId: bigint, codeId: bigint): Promise<number | null>;
     getCostCodesForPhase(phaseId: bigint): Promise<{
         __kind__: "ok";
@@ -827,6 +873,7 @@ export interface backendInterface {
     getFeatureLocks(): Promise<FeatureLockSnapshot>;
     getFilteredStandards(projectCategory: string, projectSubtype: string, state: string | null): Promise<Array<SafetyStandard>>;
     getIdleTimeSetting(): Promise<IdleTimeSetting | null>;
+    getLoginEmails(): Promise<Result_3>;
     getLoginHistory(): Promise<Array<SessionSnapshot>>;
     getNCCERCertificationsForParticipant(participantId: string): Promise<Array<NCCERCertShared>>;
     getNextPayoutDate(): Promise<string | null>;
@@ -864,6 +911,8 @@ export interface backendInterface {
     getStandardsForPhase(phaseId: string): Promise<Array<SafetyStandard>>;
     getSubscriptionStatus(): Promise<SubscriptionStatus>;
     getTrialLinks(): Promise<Array<TrialLink>>;
+    getUserCancellationRequests(email: string): Promise<Array<CancellationRequest>>;
+    getUserLoginEmails(_targetEmail: string): Promise<Array<string>>;
     getUserSubscription(): Promise<UserSubscription | null>;
     getZoomSettings(): Promise<ZoomSettings | null>;
     isAdmin(p: Principal): Promise<boolean>;
@@ -874,7 +923,9 @@ export interface backendInterface {
     listScenarios(): Promise<Array<ScenarioSummary>>;
     registerEmailUser(email: string, password: string, name: string, phone: string): Promise<Result>;
     rejectParticipant(id: string): Promise<Participant | null>;
+    removeLoginEmail(email: string): Promise<Result>;
     removeParticipantAssignment(participantId: string, phaseId: string, costCodeId: string): Promise<boolean>;
+    removeUserLoginEmail(email: string): Promise<Result>;
     renewSubscription(): Promise<Result_1>;
     resendPasscode(id: string): Promise<boolean>;
     revokeAdmin(p: Principal): Promise<Result>;
@@ -899,17 +950,14 @@ export interface backendInterface {
     setPhases(inputs: Array<PhaseInput>): Promise<void>;
     setReminderEmailSent(day: bigint): Promise<void>;
     setStripeSecretKey(secretKey: string): Promise<void>;
+    submitCancellationRequest(email: string, reason: string): Promise<Result_2>;
     submitDocumentForReview(documentType: string, storageKey: string, stripeSessionId: string | null): Promise<VerificationDocument>;
-    /**
-     * / One-time claim: the first caller who finds _controller == anonymous
-     * / principal becomes the permanent controller.  Secure because the
-     * / deployer is the only one who can call this before any user interaction.
-     */
     submitPhaseSignOff(phaseId: string, approved: boolean, comments: string): Promise<PhaseSignOffShared>;
     submitPlanForApproval(id: string): Promise<CriticalChangePlanShared | null>;
     switchTrialTier(newTier: SubscriptionTier): Promise<Result_1>;
     testRSMeansConnection(): Promise<string>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    unfreezeSubscription(target: Principal): Promise<Result>;
     unlinkStandardFromPhase(phaseId: string, csiCode: string, standardId: string): Promise<boolean>;
     updateAIAForm(formId: string, fieldData: Array<[string, string]>): Promise<boolean>;
     updateControllerProfile(name: string, email: string, phone: string): Promise<Result>;

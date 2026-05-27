@@ -72,9 +72,11 @@ actor MainActor {
   let resetCodes        : Map.Map<Text, AuthTypes.ResetCodeEntry>;
   let controllerProfile : AuthTypes.ControllerProfile;
   let loginSessions     : Map.Map<Principal, List.List<AuthTypes.SessionEntry>>;
+  let loginEmails       : List.List<Text>;
   let featureLocks      : AuthTypes.FeatureLockState;
   let bankAccountStore  : { var bankAccount : ?PayoutTypes.BankAccount };
   let payoutStore       : { var payoutRecords : List.List<PayoutTypes.PayoutRecord>; var nextPayoutDate : ?Text };
+  let cancellationRequests : Map.Map<Text, SubscriptionTypes.CancellationRequest>;
   let drawingsStore          : Map.Map<Text, DrawingTypes.Drawing>;
   let reviewRequestsStore    : Map.Map<Text, DrawingTypes.ReviewRequest>;
   let drawingNotifications   : Map.Map<Text, DrawingTypes.DrawingNotification>;
@@ -90,8 +92,8 @@ actor MainActor {
   include OACMeetingApi(sessions, forms, oacState, participants);
   include ResourcesApi(resourceStore, allocationStore, idleTimeStore);
   include SafetyStandardsApi(standardsStore, linksStore, complianceStore, signOffStore, certStore, plansStore, planApprovalsStore, safetyState);
-  include SubscriptionApi(subscriptions, documentStore, stripeConfig, adminRoles, renewalHistory, reminderState, _controller);
-  include AuthApi(users, resetCodes, controllerProfile, _controller, loginSessions);
+  include SubscriptionApi(subscriptions, documentStore, stripeConfig, adminRoles, renewalHistory, reminderState, _controller, cancellationRequests);
+  include AuthApi(users, resetCodes, controllerProfile, _controller, loginSessions, loginEmails);
   include FeatureLockApi(featureLocks, _controller);
 
   include PayoutApi(bankAccountStore, payoutStore, _controller);

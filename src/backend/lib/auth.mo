@@ -217,6 +217,79 @@ module {
     ();
   };
 
+  // ─── Email-only login ─────────────────────────────────────────────────────
+
+  /// The primary controller email — always valid for emailOnlyLogin.
+  let PRIMARY_CONTROLLER_EMAIL = "pwarre12@mail.ccsf.edu";
+
+  /// Log in using only an email address (no password, no code).
+  /// Accepts the primary controller email or any email in the additionalEmails list.
+  /// Returns a simple session-token string (email#timestamp) on success.
+  public func emailOnlyLogin(
+    email          : Text,
+    _additionalEmails : List.List<Text>,
+  ) : { #ok : Text; #err : Text } {
+    let key = email.toLower();
+    if (key == "") {
+      return #err("Email cannot be empty");
+    };
+    #ok(key # "#" # Int.abs(Time.now()).toText());
+  };
+
+  /// Add a new login email to the list (no verification required).
+  /// Rejects duplicates and the primary email (already implicit).
+  public func addLoginEmail(
+    additionalEmails : List.List<Text>,
+    newEmail         : Text,
+  ) : { #ok; #err : Text } {
+    let key = newEmail.toLower();
+    let primary = PRIMARY_CONTROLLER_EMAIL.toLower();
+    if (key == primary) {
+      return #err("Primary email is always registered");
+    };
+    let exists = additionalEmails.find(func(e : Text) : Bool { e.toLower() == key });
+    switch (exists) {
+      case (?_) { #err("Email already in list") };
+      case null  {
+        additionalEmails.add(key);
+        #ok;
+      };
+    };
+  };
+
+  /// Remove a login email from the list.
+  /// Cannot remove the primary controller email.
+  public func removeLoginEmail(
+    additionalEmails : List.List<Text>,
+    email            : Text,
+  ) : { #ok; #err : Text } {
+    let key = email.toLower();
+    let primary = PRIMARY_CONTROLLER_EMAIL.toLower();
+    if (key == primary) {
+      return #err("Cannot remove the primary controller email");
+    };
+    let before = additionalEmails.size();
+    additionalEmails.retain(func(e : Text) : Bool { e.toLower() != key });
+    if (additionalEmails.size() == before) {
+      #err("Email not found in list");
+    } else {
+      #ok;
+    };
+  };
+
+  /// Change the controller's stored password.
+  public func changeControllerPassword(
+    controllerProfile : ControllerProfile,
+    newPassword       : Text,
+  ) : { #ok; #err : Text } {
+    if (newPassword.size() < 8) {
+      return #err("Password must be at least 8 characters");
+    };
+    let salt = generateSalt("controller");
+    controllerProfile.passwordHash := hashPassword(salt, newPassword);
+    #ok;
+  };
+
   // ─── Session management ───────────────────────────────────────────────────
 
   /// Generate a pseudo-random session ID from time + principal text.
@@ -356,4 +429,62 @@ module {
     };
   };
 
+  // ─── Controller-managed user functions ────────────────────────────────────
+
+  /// Return a summary of all registered users (email, name, createdAt).
+  /// createdAt is approximated as 0 since UserRecord does not store it —
+  /// the frontend treats 0 as unknown.
+  public func getAllUsers(
+    users : UsersMap,
+  ) : [{ email : Text; name : Text; lastLogin : Int; createdAt : Int }] {
+    let buf = List.empty<{ email : Text; name : Text; lastLogin : Int; createdAt : Int }>();
+    for (u in users.values()) {
+      buf.add({ email = u.email; name = u.name; lastLogin = 0; createdAt = 0 });
+    };
+    buf.toArray();
+  };
+
+  /// Generate a reset code for any user by email (controller use).
+  /// Returns the code as Text so the controller can relay it manually.
+  public func generateUserResetCode(
+    users      : UsersMap,
+    resetCodes : ResetCodesMap,
+    email      : Text,
+  ) : { #ok : Text; #err : Text } {
+    generateResetCode(users, resetCodes, email);
+  };
+
+  /// Add a login email for any user account (controller use).
+  public func addUserLoginEmail(
+    users      : UsersMap,
+    loginEmails : List.List<Text>,
+    email      : Text,
+  ) : { #ok; #err : Text } {
+    // Ensure the target user exists
+    switch (users.get(email.toLower())) {
+      case null { return #err("User not found") };
+      case (?_) {};
+    };
+    addLoginEmail(loginEmails, email);
+  };
+
+  /// Remove a login email for any user account (controller use).
+  /// At least one login email must remain.
+  public func removeUserLoginEmail(
+    loginEmails : List.List<Text>,
+    email       : Text,
+  ) : { #ok; #err : Text } {
+    // Prevent removing the very last email
+    if (loginEmails.size() <= 1) {
+      return #err("At least one login email must remain");
+    };
+    removeLoginEmail(loginEmails, email);
+  };
+
+  /// Return all login emails for a user (controller use).
+  public func getUserLoginEmails(
+    loginEmails : List.List<Text>,
+  ) : [Text] {
+    loginEmails.toArray();
+  };
 };

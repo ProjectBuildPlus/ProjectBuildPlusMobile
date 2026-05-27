@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePhases } from "@/hooks/useQueries";
 import { useCriticalPath } from "@/hooks/useResources";
 import { Activity, AlertTriangle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 function buildGanttPhases(phases: Phase[]): GanttPhase[] {
   const sorted = [...phases].sort(
@@ -22,11 +22,20 @@ function buildGanttPhases(phases: Phase[]): GanttPhase[] {
     dependencies: idx > 0 ? [sorted[idx - 1].id.toString()] : [],
   }));
 }
+function useHighlightParam(): string | null {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("phase") ?? params.get("activity");
+}
 
 export default function CriticalPathPage() {
   const [viewMode, setViewMode] = useState<"gantt" | "table">("gantt");
   const { data: phases = [], isLoading: phasesLoading } = usePhases();
   const ganttPhases = useMemo(() => buildGanttPhases(phases), [phases]);
+  const highlightParam = useHighlightParam();
+  const highlightedPhase = highlightParam
+    ? decodeURIComponent(highlightParam)
+    : null;
+  const highlightRef = useRef<HTMLDivElement>(null);
 
   const {
     data: criticalPathNodes = [] as CriticalPathNode[],
@@ -35,6 +44,16 @@ export default function CriticalPathPage() {
   } = useCriticalPath(ganttPhases);
 
   const isLoading = phasesLoading || cpLoading;
+  useEffect(() => {
+    if (!isLoading && highlightedPhase && highlightRef.current) {
+      setTimeout(() => {
+        highlightRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 300);
+    }
+  }, [isLoading, highlightedPhase]);
 
   const criticalCount = criticalPathNodes.filter((n) => n.isCritical).length;
   const projectDuration = useMemo(() => {
@@ -132,6 +151,20 @@ export default function CriticalPathPage() {
         </Card>
       )}
 
+      {/* Highlight banner when navigated from milestones */}
+      {!isLoading && highlightedPhase && (
+        <div
+          className="flex items-center gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-5 py-3"
+          data-ocid="critical-path.highlight_banner"
+        >
+          <Activity className="w-4 h-4 text-amber-400 shrink-0" />
+          <p className="text-sm text-amber-300">
+            Highlighting phase:{" "}
+            <span className="font-semibold text-white">{highlightedPhase}</span>
+          </p>
+        </div>
+      )}
+
       {/* Chart */}
       {!isLoading && !error && ganttPhases.length > 0 && (
         <Card className="border-border bg-card">
@@ -142,6 +175,20 @@ export default function CriticalPathPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {highlightedPhase && (
+              <div
+                ref={highlightRef}
+                className="mb-4 rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-2.5 text-sm"
+                data-ocid="critical-path.highlighted_row"
+              >
+                <span className="text-amber-300">
+                  Phase highlighted:{" "}
+                  <span className="font-bold text-white">
+                    {highlightedPhase}
+                  </span>
+                </span>
+              </div>
+            )}
             <GanttChart
               phases={ganttPhases}
               criticalPathNodes={criticalPathNodes}

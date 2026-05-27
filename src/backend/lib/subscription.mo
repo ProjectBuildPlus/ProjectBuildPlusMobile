@@ -3,6 +3,7 @@ import List   "mo:core/List";
 import Time   "mo:core/Time";
 import Result "mo:core/Result";
 import Types  "../types/subscription";
+import Int "mo:core/Int";
 
 module {
 
@@ -71,6 +72,8 @@ module {
           stripeSubscriptionId  = null;
           currentPlan           = tier;
           cancelledAt           = null;
+          frozenAt              = null;
+          frozenReason          = null;
         };
         subscriptions.add(caller, sub);
         #ok(sub);
@@ -412,6 +415,178 @@ module {
       { tier = #tier5year;  slug = "trial-5-year";  isActive = true },
       { tier = #tier10year; slug = "trial-10-year"; isActive = true },
     ];
+  };
+
+  // ---------------------------------------------------------------------------
+  // Cancellation requests
+  // ---------------------------------------------------------------------------
+
+  /// Submit a cancellation request for the caller's subscription.
+  /// Creates a pending request entry. Callers must have an active, trial, or frozen subscription.
+  public func submitCancellationRequest(
+    cancellationRequests : Map.Map<Text, Types.CancellationRequest>,
+    subscriptions        : Map.Map<Principal, Types.UserSubscription>,
+    caller               : Principal,
+    email                : Text,
+    reason               : Text,
+  ) : Result.Result<Types.CancellationRequest, Text> {
+    switch (subscriptions.get(caller)) {
+      case null { return #err("No subscription found") };
+      case (?sub) {
+        if (sub.status != #trial and sub.status != #active and sub.status != #frozen) {
+          return #err("Subscription is not active, trial, or frozen");
+        };
+      };
+    };
+    let now = Time.now();
+    let id  = "cancel-" # caller.toText() # "-" # Int.abs(now).toText();
+    let req : Types.CancellationRequest = {
+      id;
+      email;
+      subscriberPrincipal = caller;
+      requestedAt         = now;
+      reason;
+      status              = #pending;
+    };
+    cancellationRequests.add(id, req);
+    #ok(req);
+  };
+
+  /// Approve a pending cancellation request — sets subscription to #cancelled
+  /// and the request status to #approved.
+  public func approveCancellationRequest(
+    cancellationRequests : Map.Map<Text, Types.CancellationRequest>,
+    subscriptions        : Map.Map<Principal, Types.UserSubscription>,
+    requestId            : Text,
+  ) : Result.Result<(), Text> {
+    switch (cancellationRequests.get(requestId)) {
+      case null { return #err("Request not found") };
+      case (?req) {
+        if (req.status != #pending) {
+          return #err("Request is not pending");
+        };
+        // Cancel the subscription
+        switch (subscriptions.get(req.subscriberPrincipal)) {
+          case null {};
+          case (?sub) {
+            subscriptions.add(req.subscriberPrincipal, {
+              sub with
+              status      = #cancelled;
+              cancelledAt = ?Time.now();
+            });
+          };
+        };
+        // Approve the request
+        cancellationRequests.add(requestId, { req with status = #approved });
+        #ok(());
+      };
+    };
+  };
+
+  /// Deny a cancellation request — request status set to #denied,
+  /// subscription remains as-is.
+  public func denyCancellationRequest(
+    cancellationRequests : Map.Map<Text, Types.CancellationRequest>,
+    requestId            : Text,
+  ) : Result.Result<(), Text> {
+    switch (cancellationRequests.get(requestId)) {
+      case null { return #err("Request not found") };
+      case (?req) {
+        if (req.status != #pending) {
+          return #err("Request is not pending");
+        };
+        cancellationRequests.add(requestId, { req with status = #denied });
+        #ok(());
+      };
+    };
+  };
+
+  /// Controller-only: immediately cancel any active, trial, or frozen subscription.
+  public func directCancelSubscription(
+    subscriptions : Map.Map<Principal, Types.UserSubscription>,
+    target        : Principal,
+  ) : Result.Result<(), Text> {
+    switch (subscriptions.get(target)) {
+      case null { #err("No subscription found for that user") };
+      case (?sub) {
+        if (sub.status != #active and sub.status != #trial and sub.status != #frozen) {
+          return #err("Subscription is already cancelled or expired");
+        };
+        subscriptions.add(target, {
+          sub with
+          status      = #cancelled;
+          cancelledAt = ?Time.now();
+        });
+        #ok(());
+      };
+    };
+  };
+
+  /// Controller-only: freeze a subscription (pause access without cancelling).
+  /// Records frozenAt and an optional reason.
+  public func freezeSubscription(
+    subscriptions : Map.Map<Principal, Types.UserSubscription>,
+    target        : Principal,
+    reason        : Text,
+  ) : Result.Result<(), Text> {
+    switch (subscriptions.get(target)) {
+      case null { #err("No subscription found for that user") };
+      case (?sub) {
+        if (sub.status == #frozen) {
+          return #err("Subscription is already frozen");
+        };
+        if (sub.status != #active and sub.status != #trial) {
+          return #err("Can only freeze an active or trial subscription");
+        };
+        subscriptions.add(target, {
+          sub with
+          status       = #frozen;
+          frozenAt     = ?Time.now();
+          frozenReason = ?(if (reason == "") { "Frozen by controller" } else { reason });
+        });
+        #ok(());
+      };
+    };
+  };
+
+  /// Controller-only: unfreeze a subscription — restores status to #active.
+  public func unfreezeSubscription(
+    subscriptions : Map.Map<Principal, Types.UserSubscription>,
+    target        : Principal,
+  ) : Result.Result<(), Text> {
+    switch (subscriptions.get(target)) {
+      case null { #err("No subscription found for that user") };
+      case (?sub) {
+        if (sub.status != #frozen) {
+          return #err("Subscription is not frozen");
+        };
+        subscriptions.add(target, {
+          sub with
+          status       = #active;
+          frozenAt     = null;
+          frozenReason = null;
+        });
+        #ok(());
+      };
+    };
+  };
+
+  /// Return all cancellation requests (all statuses).
+  public func getAllCancellationRequests(
+    cancellationRequests : Map.Map<Text, Types.CancellationRequest>,
+  ) : [Types.CancellationRequest] {
+    cancellationRequests.values().toArray();
+  };
+
+  /// Return all cancellation requests for a specific subscriber email.
+  public func getUserCancellationRequests(
+    cancellationRequests : Map.Map<Text, Types.CancellationRequest>,
+    email                : Text,
+  ) : [Types.CancellationRequest] {
+    let key = email.toLower();
+    cancellationRequests.values()
+      .filter(func(r : Types.CancellationRequest) : Bool { r.email.toLower() == key })
+      .toArray();
   };
 
   // ---------------------------------------------------------------------------

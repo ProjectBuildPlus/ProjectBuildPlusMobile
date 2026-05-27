@@ -4,16 +4,18 @@ import Result "mo:core/Result";
 import Types  "../types/subscription";
 import SubLib "../lib/subscription";
 import Principal "mo:core/Principal";
+import Runtime "mo:core/Runtime";
 
 // SubscriptionApi mixin — all public endpoints for the subscription domain.
 mixin (
-  subscriptions  : Map.Map<Principal, Types.UserSubscription>,
-  documentStore  : Map.Map<Principal, List.List<Types.VerificationDocument>>,
-  stripeConfig   : Types.StripeConfig,
-  adminRoles     : Map.Map<Principal, Types.AdminRole>,
-  renewalHistory : Map.Map<Principal, List.List<Types.RenewalHistoryEntry>>,
-  reminderState  : Map.Map<Principal, Types.ReminderState>,
-  controllerPrincipal : Principal
+  subscriptions        : Map.Map<Principal, Types.UserSubscription>,
+  documentStore        : Map.Map<Principal, List.List<Types.VerificationDocument>>,
+  stripeConfig         : Types.StripeConfig,
+  adminRoles           : Map.Map<Principal, Types.AdminRole>,
+  renewalHistory       : Map.Map<Principal, List.List<Types.RenewalHistoryEntry>>,
+  reminderState        : Map.Map<Principal, Types.ReminderState>,
+  controllerPrincipal  : Principal,
+  cancellationRequests : Map.Map<Text, Types.CancellationRequest>
 ) {
 
   /// Enrol the caller in a 30-day free trial for the requested tier.
@@ -193,5 +195,80 @@ mixin (
     SubLib.setReminderEmailSent(reminderState, caller, day);
   };
 
+  // ─── Cancellation requests ────────────────────────────────────────────────
+
+  /// Submit a cancellation request for the caller's subscription.
+  public shared ({ caller }) func submitCancellationRequest(
+    email  : Text,
+    reason : Text,
+  ) : async Result.Result<Types.CancellationRequest, Text> {
+    SubLib.submitCancellationRequest(cancellationRequests, subscriptions, caller, email, reason);
+  };
+
+  /// Controller-only: approve a pending cancellation request.
+  public shared ({ caller }) func approveCancellationRequest(
+    requestId : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.approveCancellationRequest(cancellationRequests, subscriptions, requestId);
+  };
+
+  /// Controller-only: deny a pending cancellation request.
+  public shared ({ caller }) func denyCancellationRequest(
+    requestId : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.denyCancellationRequest(cancellationRequests, requestId);
+  };
+
+  /// Controller-only: immediately cancel any active/trial/frozen subscription.
+  public shared ({ caller }) func directCancelSubscription(
+    target : Principal,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.directCancelSubscription(subscriptions, target);
+  };
+
+  /// Controller-only: freeze a subscription (pause access without cancelling).
+  public shared ({ caller }) func freezeSubscription(
+    target : Principal,
+    reason : Text,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.freezeSubscription(subscriptions, target, reason);
+  };
+
+  /// Controller-only: unfreeze a frozen subscription.
+  public shared ({ caller }) func unfreezeSubscription(
+    target : Principal,
+  ) : async Result.Result<(), Text> {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.unfreezeSubscription(subscriptions, target);
+  };
+
+  /// Controller-only: return all cancellation requests.
+  public shared query ({ caller }) func getAllCancellationRequests() : async [Types.CancellationRequest] {
+    if (caller != controllerPrincipal) {
+      Runtime.trap("Unauthorized: controller only");
+    };
+    SubLib.getAllCancellationRequests(cancellationRequests);
+  };
+
+  /// Return all cancellation requests for the given subscriber email.
+  public shared query func getUserCancellationRequests(
+    email : Text,
+  ) : async [Types.CancellationRequest] {
+    SubLib.getUserCancellationRequests(cancellationRequests, email);
+  };
 };
 

@@ -40,6 +40,8 @@ import {
   DollarSign,
   Eye,
   FileText,
+  Flag,
+  FolderOpen,
   GitBranch,
   GitCompare,
   Layers,
@@ -110,6 +112,12 @@ const SECTIONS: SectionConfig[] = [
     label: "Drawings & Documents",
     icon: <FileText className="h-5 w-5" />,
     to: "/drawings",
+  },
+  {
+    id: "autodesk",
+    label: "AutoDesk",
+    icon: <FolderOpen className="h-5 w-5" />,
+    to: "/autodesk",
   },
 ];
 
@@ -688,7 +696,39 @@ export default function ProjectDashboard() {
               </div>
             </div>
           </Link>
+          <Link to="/milestones" data-ocid="dashboard.milestones.card">
+            <div className="group flex items-center gap-4 rounded-xl border border-border bg-card px-5 py-4 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <Flag className="h-5 w-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-display font-semibold text-foreground leading-tight">
+                  Milestones
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Timeline graph and bar chart comparison
+                </p>
+              </div>
+            </div>
+          </Link>
         </div>
+
+        {/* Milestones quick-access card */}
+        <Link to="/milestones" data-ocid="dashboard.milestones.card">
+          <div className="group flex items-center gap-4 rounded-xl border border-border bg-card px-5 py-4 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Flag className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-display font-semibold text-foreground leading-tight">
+                Milestones
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Phase targets, progress graphs, and budget comparison
+              </p>
+            </div>
+          </div>
+        </Link>
 
         {/* Safety Standards quick-access card */}
         <Link

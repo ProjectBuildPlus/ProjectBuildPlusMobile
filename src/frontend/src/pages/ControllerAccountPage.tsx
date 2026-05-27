@@ -8,9 +8,13 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
   useActiveSessions,
+  useAddLoginEmail,
+  useChangeControllerPassword,
   useEndSession,
   useFeatureLocks,
+  useGetLoginEmails,
   useLoginHistory,
+  useRemoveLoginEmail,
   useSetFeatureLock,
 } from "@/hooks/useAuth";
 import type {
@@ -31,14 +35,20 @@ import {
   ClipboardList,
   DollarSign,
   FileText,
+  Key,
+  KeyRound,
   Laptop,
   Loader2,
   Lock,
   LogIn,
+  Mail,
   Monitor,
+  PlusCircle,
   Shield,
   Smartphone,
+  Trash2,
   Unlock,
+  UserCheck,
   UserX,
   Users,
   Wrench,
@@ -213,8 +223,32 @@ function ControllerAccountContent() {
   const _assignAdmin = useAssignAdmin();
   const revokeAdmin = useRevokeAdmin();
 
+  const { data: loginEmails, isLoading: emailsLoading } = useGetLoginEmails();
+  const addLoginEmail = useAddLoginEmail();
+  const removeLoginEmail = useRemoveLoginEmail();
+  const changeControllerPassword = useChangeControllerPassword();
+
   const [addAdminEmail, setAddAdminEmail] = useState("");
   const [showAddAdmin, setShowAddAdmin] = useState(false);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  const [newEmailInput, setNewEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // Controller Email & Password Management state
+  const [ctrlEmails, setCtrlEmails] = useState<string[]>([
+    "pwarre12@mail.ccsf.edu",
+  ]);
+  const [addCtrlEmail, setAddCtrlEmail] = useState("");
+  const [addCtrlEmailError, setAddCtrlEmailError] = useState("");
+  const [ctrlPwNew, setCtrlPwNew] = useState("");
+  const [ctrlPwConfirm, setCtrlPwConfirm] = useState("");
+  const [ctrlPwError, setCtrlPwError] = useState("");
+  const [ctrlPwSuccess, setCtrlPwSuccess] = useState("");
 
   const history =
     loginHistory && loginHistory.length > 0 ? loginHistory : MOCK_LOGIN_HISTORY;
@@ -261,6 +295,124 @@ function ControllerAccountContent() {
       toast.success("Admin access revoked.");
     } catch {
       toast.error("Failed to revoke admin.");
+    }
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+    if (!newPassword.trim()) {
+      setPasswordError("Password is required.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+    try {
+      await changeControllerPassword.mutateAsync({ newPassword });
+      setPasswordSuccess("Password changed successfully.");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setPasswordError(
+        err instanceof Error ? err.message : "Failed to change password.",
+      );
+    }
+  }
+
+  async function handleAddEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setEmailError("");
+    if (!newEmailInput.trim()) {
+      setEmailError("Email is required.");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmailInput.trim())) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    try {
+      await addLoginEmail.mutateAsync({ email: newEmailInput.trim() });
+      setNewEmailInput("");
+      toast.success("Email added successfully.");
+    } catch (err) {
+      setEmailError(
+        err instanceof Error ? err.message : "Failed to add email.",
+      );
+    }
+  }
+
+  async function handleRemoveEmail(email: string) {
+    try {
+      await removeLoginEmail.mutateAsync({ email });
+      toast.success("Email removed.");
+    } catch {
+      toast.error("Failed to remove email.");
+    }
+  }
+
+  const emails = loginEmails ?? ["pwarre12@mail.ccsf.edu"];
+  const primaryEmail = "pwarre12@mail.ccsf.edu";
+
+  // ── Controller Email & Password handlers ──
+  function handleAddCtrlEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setAddCtrlEmailError("");
+    const trimmed = addCtrlEmail.trim();
+    if (!trimmed) {
+      setAddCtrlEmailError("Email is required.");
+      return;
+    }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(trimmed)) {
+      setAddCtrlEmailError("Please enter a valid email address.");
+      return;
+    }
+    if (ctrlEmails.includes(trimmed)) {
+      setAddCtrlEmailError("This email is already on the list.");
+      return;
+    }
+    setCtrlEmails((prev) => [...prev, trimmed]);
+    setAddCtrlEmail("");
+  }
+
+  function handleRemoveCtrlEmail(em: string) {
+    if (em === primaryEmail) return;
+    setCtrlEmails((prev) => prev.filter((e) => e !== em));
+  }
+
+  async function handleCtrlPasswordSave(e: React.FormEvent) {
+    e.preventDefault();
+    setCtrlPwError("");
+    setCtrlPwSuccess("");
+    if (!ctrlPwNew.trim()) {
+      setCtrlPwError("Password is required.");
+      return;
+    }
+    if (ctrlPwNew.length < 6) {
+      setCtrlPwError("Password must be at least 6 characters.");
+      return;
+    }
+    if (ctrlPwNew !== ctrlPwConfirm) {
+      setCtrlPwError("Passwords do not match.");
+      return;
+    }
+    try {
+      await changeControllerPassword.mutateAsync({ newPassword: ctrlPwNew });
+      setCtrlPwSuccess("Controller password updated successfully.");
+      setCtrlPwNew("");
+      setCtrlPwConfirm("");
+    } catch (err) {
+      setCtrlPwError(
+        err instanceof Error ? err.message : "Failed to update password.",
+      );
     }
   }
 
@@ -606,6 +758,352 @@ function ControllerAccountContent() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* ── ACCOUNT SETTINGS ── */}
+      <Card className="bg-card border-border">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Key className="h-4 w-4 text-amber-400" />
+            Account Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Change Password */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Lock className="h-4 w-4 text-primary" />
+              Change Password
+            </h3>
+            <form onSubmit={handleChangePassword} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="new-password" className="text-xs">
+                  New Password
+                </Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    setPasswordError("");
+                    setPasswordSuccess("");
+                  }}
+                  data-ocid="account_settings.new_password_input"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="confirm-password" className="text-xs">
+                  Confirm Password
+                </Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setPasswordError("");
+                    setPasswordSuccess("");
+                  }}
+                  data-ocid="account_settings.confirm_password_input"
+                />
+              </div>
+              {passwordError && (
+                <p
+                  className="text-xs text-red-400"
+                  data-ocid="account_settings.password_error"
+                >
+                  {passwordError}
+                </p>
+              )}
+              {passwordSuccess && (
+                <p
+                  className="text-xs text-emerald-400"
+                  data-ocid="account_settings.password_success"
+                >
+                  {passwordSuccess}
+                </p>
+              )}
+              <Button
+                type="submit"
+                size="sm"
+                disabled={changeControllerPassword.isPending}
+                data-ocid="account_settings.save_password_button"
+              >
+                {changeControllerPassword.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                ) : null}
+                Save Password
+              </Button>
+            </form>
+          </div>
+
+          <Separator />
+
+          {/* Login Email Addresses */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Mail className="h-4 w-4 text-primary" />
+              Login Email Addresses
+            </h3>
+            {emailsLoading ? (
+              <div
+                className="flex justify-center py-4"
+                data-ocid="account_settings.emails_loading_state"
+              >
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {emails.map((email, idx) => {
+                  const isPrimary = email === primaryEmail;
+                  return (
+                    <div
+                      key={email}
+                      className="flex items-center gap-3 rounded-lg bg-muted/20 border border-border px-4 py-3"
+                      data-ocid={`account_settings.email_item.${idx + 1}`}
+                    >
+                      <Mail className="h-4 w-4 shrink-0 text-primary" />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">
+                          {email}
+                        </div>
+                        {isPrimary && (
+                          <div className="text-[10px] text-muted-foreground">
+                            Primary — cannot be removed
+                          </div>
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        disabled={isPrimary || removeLoginEmail.isPending}
+                        onClick={() => handleRemoveEmail(email)}
+                        data-ocid={`account_settings.remove_email_button.${idx + 1}`}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        Remove
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <form
+              onSubmit={handleAddEmail}
+              className="flex gap-2 items-end pt-2"
+            >
+              <div className="flex-1 space-y-1.5">
+                <Label htmlFor="new-login-email" className="text-xs">
+                  Add New Email
+                </Label>
+                <Input
+                  id="new-login-email"
+                  type="email"
+                  placeholder="newemail@example.com"
+                  value={newEmailInput}
+                  onChange={(e) => {
+                    setNewEmailInput(e.target.value);
+                    setEmailError("");
+                  }}
+                  data-ocid="account_settings.new_email_input"
+                />
+              </div>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={addLoginEmail.isPending}
+                data-ocid="account_settings.add_email_button"
+              >
+                {addLoginEmail.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                ) : null}
+                Add Email
+              </Button>
+            </form>
+            {emailError && (
+              <p
+                className="text-xs text-red-400"
+                data-ocid="account_settings.email_error"
+              >
+                {emailError}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      {/* ── CONTROLLER EMAIL & PASSWORD MANAGEMENT ── */}
+      <Card className="bg-card border-border">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <KeyRound className="h-4 w-4 text-amber-400" />
+            Controller Email &amp; Password Management
+          </CardTitle>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manage all authorized controller-level emails and set the controller
+            login password.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* ── Controller Email Addresses ── */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-primary" />
+              Controller Email Addresses
+            </h3>
+            <div className="space-y-2">
+              {ctrlEmails.map((em, idx) => {
+                const isPrimary = em === primaryEmail;
+                return (
+                  <div
+                    key={em}
+                    className={`flex items-center gap-3 rounded-lg px-4 py-3 border ${
+                      isPrimary
+                        ? "border-amber-500/40 bg-amber-500/10"
+                        : "border-border bg-muted/20"
+                    }`}
+                    data-ocid={`ctrl_emails.item.${idx + 1}`}
+                  >
+                    <Mail className="h-4 w-4 shrink-0 text-primary" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium truncate">{em}</div>
+                      {isPrimary && (
+                        <div className="text-[10px] text-amber-400/80">
+                          Primary controller — cannot be removed
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      disabled={isPrimary}
+                      onClick={() => handleRemoveCtrlEmail(em)}
+                      data-ocid={`ctrl_emails.delete_button.${idx + 1}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+            <form
+              onSubmit={handleAddCtrlEmail}
+              className="flex gap-2 items-end"
+            >
+              <div className="flex-1 space-y-1.5">
+                <Label htmlFor="ctrl-add-email" className="text-xs">
+                  Add Controller Email
+                </Label>
+                <Input
+                  id="ctrl-add-email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={addCtrlEmail}
+                  onChange={(e) => {
+                    setAddCtrlEmail(e.target.value);
+                    setAddCtrlEmailError("");
+                  }}
+                  data-ocid="ctrl_emails.input"
+                />
+              </div>
+              <Button
+                type="submit"
+                size="sm"
+                data-ocid="ctrl_emails.add_button"
+              >
+                <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                Add Email
+              </Button>
+            </form>
+            {addCtrlEmailError && (
+              <p
+                className="text-xs text-red-400"
+                data-ocid="ctrl_emails.error_state"
+              >
+                {addCtrlEmailError}
+              </p>
+            )}
+          </div>
+
+          <Separator />
+
+          {/* ── Controller Password ── */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <Lock className="h-4 w-4 text-primary" />
+              Controller Password
+            </h3>
+            <form onSubmit={handleCtrlPasswordSave} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="ctrl-pw-new" className="text-xs">
+                  New Password
+                </Label>
+                <Input
+                  id="ctrl-pw-new"
+                  type="password"
+                  placeholder="Enter new password"
+                  value={ctrlPwNew}
+                  onChange={(e) => {
+                    setCtrlPwNew(e.target.value);
+                    setCtrlPwError("");
+                    setCtrlPwSuccess("");
+                  }}
+                  data-ocid="ctrl_password.new_password_input"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ctrl-pw-confirm" className="text-xs">
+                  Confirm Password
+                </Label>
+                <Input
+                  id="ctrl-pw-confirm"
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={ctrlPwConfirm}
+                  onChange={(e) => {
+                    setCtrlPwConfirm(e.target.value);
+                    setCtrlPwError("");
+                    setCtrlPwSuccess("");
+                  }}
+                  data-ocid="ctrl_password.confirm_password_input"
+                />
+              </div>
+              {ctrlPwError && (
+                <p
+                  className="text-xs text-red-400"
+                  data-ocid="ctrl_password.error_state"
+                >
+                  {ctrlPwError}
+                </p>
+              )}
+              {ctrlPwSuccess && (
+                <div
+                  className="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400"
+                  data-ocid="ctrl_password.success_state"
+                >
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  {ctrlPwSuccess}
+                </div>
+              )}
+              <Button
+                type="submit"
+                size="sm"
+                disabled={changeControllerPassword.isPending}
+                data-ocid="ctrl_password.save_button"
+              >
+                {changeControllerPassword.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                ) : null}
+                Save Password
+              </Button>
+            </form>
+          </div>
         </CardContent>
       </Card>
     </div>

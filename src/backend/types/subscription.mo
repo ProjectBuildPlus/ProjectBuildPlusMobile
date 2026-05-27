@@ -15,6 +15,7 @@ module {
     #active;
     #expired;
     #cancelled;
+    #frozen;
   };
 
   // Full subscription record stored per principal.
@@ -34,6 +35,27 @@ module {
     stripeSubscriptionId   : ?Text;
     currentPlan            : SubscriptionTier;
     cancelledAt            : ?Int;
+    frozenAt               : ?Int;
+    frozenReason           : ?Text;
+  };
+
+  // ─── Cancellation requests ────────────────────────────────────────────────
+
+  /// A user-submitted request to cancel their subscription.
+  /// Status transitions: pending → approved (subscription cancelled) or denied.
+  public type CancellationRequestStatus = {
+    #pending;
+    #approved;
+    #denied;
+  };
+
+  public type CancellationRequest = {
+    id                  : Text;
+    email               : Text;
+    subscriberPrincipal : Principal;
+    requestedAt         : Int;
+    reason              : Text;
+    status              : CancellationRequestStatus;
   };
 
   // Static trial-entry links — one per tier.

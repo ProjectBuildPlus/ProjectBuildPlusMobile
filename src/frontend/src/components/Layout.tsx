@@ -35,6 +35,7 @@ const baseNavItems = [
   { label: "Scenarios", to: "/scenarios" },
   { label: "Cost & Resources", to: "/cost-schedule-resource-control" },
   { label: "Critical Path", to: "/critical-path" },
+  { label: "Milestones", to: "/milestones" },
   { label: "Directory", to: "/directory" },
   { label: "Safety Standards", to: "/safety-standards" },
   { label: "Settings", to: "/settings" },

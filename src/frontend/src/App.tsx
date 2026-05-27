@@ -1,8 +1,8 @@
 import { ControllerOnly } from "@/components/ControllerOnly";
 import { Layout } from "@/components/Layout";
-import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { OfflineSyncProvider } from "@/hooks/useOfflineSync";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
+import AutodeskPage from "@/pages/AutodeskPage";
 import BenchmarksPage from "@/pages/BenchmarksPage";
 import CashRequirementCurve from "@/pages/CashRequirementCurve";
 import ControllerAccountPage from "@/pages/ControllerAccountPage";
@@ -13,6 +13,7 @@ import DirectoryPage from "@/pages/DirectoryPage";
 import DrawingsPage from "@/pages/DrawingsPage";
 import EarnedValueDashboard from "@/pages/EarnedValueDashboard";
 import ExportView from "@/pages/ExportView";
+import MilestonesPage from "@/pages/MilestonesPage";
 import OACMeetingPage from "@/pages/OACMeetingPage";
 import ParticipantsPage from "@/pages/ParticipantsPage";
 import PaymentSettingsPage from "@/pages/PaymentSettingsPage";
@@ -43,17 +44,29 @@ const splashRoute = createRoute({
 const layoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "layout",
+  component: Layout,
+});
+
+const controllerLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "controller-layout",
   component: () => (
-    <SubscriptionGate>
+    <ControllerOnly>
       <Layout />
-    </SubscriptionGate>
+    </ControllerOnly>
   ),
 });
 
 const adminRoute = createRoute({
-  getParentRoute: () => layoutRoute,
+  getParentRoute: () => controllerLayoutRoute,
   path: "admin",
   component: AdminDashboardPage,
+});
+
+const controllerAccountRoute = createRoute({
+  getParentRoute: () => controllerLayoutRoute,
+  path: "controller-account",
+  component: ControllerAccountPage,
 });
 
 const cashRequirementRoute = createRoute({
@@ -116,6 +129,12 @@ const criticalPathRoute = createRoute({
   component: CriticalPathPage,
 });
 
+const milestonesRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "milestones",
+  component: MilestonesPage,
+});
+
 const costScheduleResourceRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "cost-schedule-resource-control",
@@ -139,16 +158,6 @@ const controllerProfileRoute = createRoute({
   path: "controller-profile",
   component: ControllerProfilePage,
 });
-const controllerAccountRoute = createRoute({
-  getParentRoute: () => layoutRoute,
-  path: "controller-account",
-  component: () => (
-    <ControllerOnly>
-      <ControllerAccountPage />
-    </ControllerOnly>
-  ),
-});
-
 const dashboardRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "dashboard",
@@ -158,6 +167,12 @@ const drawingsRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "drawings",
   component: DrawingsPage,
+});
+
+const autodeskRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "autodesk",
+  component: AutodeskPage,
 });
 
 const exportRoute = createRoute({
@@ -218,8 +233,8 @@ const routeTree = rootRoute.addChildren([
   paymentSettingsRoute,
   renewalRoute,
   pitchReviewRoute,
+  controllerLayoutRoute.addChildren([adminRoute, controllerAccountRoute]),
   layoutRoute.addChildren([
-    adminRoute,
     cashRequirementRoute,
     pitchBreakdownRoute,
     earnedValueRoute,
@@ -230,13 +245,14 @@ const routeTree = rootRoute.addChildren([
     oacMeetingRoute,
     benchmarksRoute,
     criticalPathRoute,
+    milestonesRoute,
     costScheduleResourceRoute,
     safetyStandardsRoute,
     settingsRoute,
     controllerProfileRoute,
-    controllerAccountRoute,
     dashboardRoute,
     drawingsRoute,
+    autodeskRoute,
   ]),
 ]);
 

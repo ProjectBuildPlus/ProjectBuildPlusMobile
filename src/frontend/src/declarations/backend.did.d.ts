@@ -52,6 +52,17 @@ export interface CPMPhaseInput {
   'dependencies' : Array<string>,
   'startOffset' : number,
 }
+export interface CancellationRequest {
+  'id' : string,
+  'status' : CancellationRequestStatus,
+  'email' : string,
+  'subscriberPrincipal' : Principal,
+  'requestedAt' : bigint,
+  'reason' : string,
+}
+export type CancellationRequestStatus = { 'pending' : null } |
+  { 'denied' : null } |
+  { 'approved' : null };
 export interface ComplianceItemShared {
   'id' : string,
   'status' : ComplianceStatus,
@@ -491,13 +502,17 @@ export type Result = { 'ok' : null } |
   { 'err' : string };
 export type Result_1 = { 'ok' : UserSubscription } |
   { 'err' : string };
-export type Result_2 = {
+export type Result_2 = { 'ok' : CancellationRequest } |
+  { 'err' : string };
+export type Result_3 = { 'ok' : Array<string> } |
+  { 'err' : string };
+export type Result_4 = {
     'ok' : { 'name' : string, 'email' : string, 'phone' : string }
   } |
   { 'err' : string };
-export type Result_3 = { 'ok' : string } |
+export type Result_5 = { 'ok' : string } |
   { 'err' : string };
-export type Result_4 = { 'ok' : { 'name' : string, 'email' : string } } |
+export type Result_6 = { 'ok' : { 'name' : string, 'email' : string } } |
   { 'err' : string };
 export interface ReviewRequest {
   'id' : string,
@@ -588,7 +603,8 @@ export type StandardStatus = { 'Superseded' : null } |
 export type SubscriptionStatus = { 'trial' : null } |
   { 'active' : null } |
   { 'cancelled' : null } |
-  { 'expired' : null };
+  { 'expired' : null } |
+  { 'frozen' : null };
 export type SubscriptionTier = { 'tier10year' : null } |
   { 'tier1year' : null } |
   { 'tier5year' : null };
@@ -611,7 +627,9 @@ export interface TrialLink {
 }
 export interface UserSubscription {
   'status' : SubscriptionStatus,
+  'frozenReason' : [] | [string],
   'trialStartAt' : bigint,
+  'frozenAt' : [] | [bigint],
   'stripeSubscriptionId' : [] | [string],
   'userId' : Principal,
   'subscriptionStartAt' : [] | [bigint],
@@ -652,13 +670,16 @@ export interface _SERVICE {
     [string, DrawingCategory, DrawingFileType, string, string],
     Drawing
   >,
+  'addLoginEmail' : ActorMethod<[string], Result>,
   'addNCCERCertification' : ActorMethod<
     [string, string, string, string, string, string, bigint, bigint],
     NCCERCertShared
   >,
   'addPaymentMethod' : ActorMethod<[string], Result_1>,
   'addRenewalHistoryEntry' : ActorMethod<[RenewalHistoryEntry], Result>,
+  'addUserLoginEmail' : ActorMethod<[string, string], Result>,
   'applyProjectTemplate' : ActorMethod<[string, string], ApplyTemplateResult>,
+  'approveCancellationRequest' : ActorMethod<[string], Result>,
   'approveCriticalChangePlan' : ActorMethod<
     [string, boolean],
     CriticalPlanApproval
@@ -677,6 +698,7 @@ export interface _SERVICE {
   'canAccessCompliance' : ActorMethod<[ParticipantRole], boolean>,
   'canManageCriticalPlans' : ActorMethod<[ParticipantRole], boolean>,
   'cancelTrial' : ActorMethod<[], Result>,
+  'changeControllerPassword' : ActorMethod<[string], Result>,
   'changePassword' : ActorMethod<[string, string, string], Result>,
   /**
    * / One-time claim: the first caller who finds _controller == anonymous
@@ -736,21 +758,38 @@ export interface _SERVICE {
     { 'ok' : null } |
       { 'err' : string }
   >,
+  'denyCancellationRequest' : ActorMethod<[string], Result>,
+  'directCancelSubscription' : ActorMethod<[Principal], Result>,
   'dismissDrawingNotification' : ActorMethod<[string], boolean>,
   'dismissReminder' : ActorMethod<[bigint], undefined>,
-  'emailLogin' : ActorMethod<[string, string, string, string], Result_4>,
+  'emailLogin' : ActorMethod<[string, string, string, string], Result_6>,
+  'emailOnlyLogin' : ActorMethod<[string], Result_5>,
   'endSession' : ActorMethod<[string], undefined>,
   'enrollTrial' : ActorMethod<[SubscriptionTier, string, string], Result_1>,
   'expireSubscription' : ActorMethod<[], Result>,
   'fetchRSMeansBenchmarks' : ActorMethod<[string], string>,
-  'generateResetCode' : ActorMethod<[string], Result_3>,
+  'freezeSubscription' : ActorMethod<[Principal, string], Result>,
+  'generateResetCode' : ActorMethod<[string], Result_5>,
   'generateShareLink' : ActorMethod<[string], ShareLink>,
+  'generateUserResetCode' : ActorMethod<[string], Result_5>,
   'generateZoomMeeting' : ActorMethod<[string, string], ZoomMeetingResult>,
   'getAIAForm' : ActorMethod<[string], [] | [AIAFormEntry]>,
   'getAIAForms' : ActorMethod<[string], Array<AIAFormEntry>>,
   'getActiveFilter' : ActorMethod<[], [[] | [string], [] | [string]]>,
   'getActiveSessions' : ActorMethod<[], Array<SessionSnapshot>>,
   'getAdminList' : ActorMethod<[], Array<AdminRole>>,
+  'getAllCancellationRequests' : ActorMethod<[], Array<CancellationRequest>>,
+  'getAllUsers' : ActorMethod<
+    [],
+    Array<
+      {
+        'name' : string,
+        'createdAt' : bigint,
+        'email' : string,
+        'lastLogin' : bigint,
+      }
+    >
+  >,
   'getAppSettings' : ActorMethod<[], AppSettings>,
   'getBankAccount' : ActorMethod<[], [] | [BankAccount]>,
   'getCertificationsForPhase' : ActorMethod<[string], Array<NCCERCertShared>>,
@@ -758,7 +797,7 @@ export interface _SERVICE {
     [string],
     Array<ComplianceItemShared>
   >,
-  'getControllerProfile' : ActorMethod<[], Result_2>,
+  'getControllerProfile' : ActorMethod<[], Result_4>,
   'getCostCodeCompletion' : ActorMethod<[bigint, bigint], [] | [number]>,
   'getCostCodesForPhase' : ActorMethod<
     [bigint],
@@ -785,6 +824,7 @@ export interface _SERVICE {
     Array<SafetyStandard>
   >,
   'getIdleTimeSetting' : ActorMethod<[], [] | [IdleTimeSetting]>,
+  'getLoginEmails' : ActorMethod<[], Result_3>,
   'getLoginHistory' : ActorMethod<[], Array<SessionSnapshot>>,
   'getNCCERCertificationsForParticipant' : ActorMethod<
     [string],
@@ -837,6 +877,11 @@ export interface _SERVICE {
   'getStandardsForPhase' : ActorMethod<[string], Array<SafetyStandard>>,
   'getSubscriptionStatus' : ActorMethod<[], SubscriptionStatus>,
   'getTrialLinks' : ActorMethod<[], Array<TrialLink>>,
+  'getUserCancellationRequests' : ActorMethod<
+    [string],
+    Array<CancellationRequest>
+  >,
+  'getUserLoginEmails' : ActorMethod<[string], Array<string>>,
   'getUserSubscription' : ActorMethod<[], [] | [UserSubscription]>,
   'getZoomSettings' : ActorMethod<[], [] | [ZoomSettings]>,
   'isAdmin' : ActorMethod<[Principal], boolean>,
@@ -850,10 +895,12 @@ export interface _SERVICE {
   'listScenarios' : ActorMethod<[], Array<ScenarioSummary>>,
   'registerEmailUser' : ActorMethod<[string, string, string, string], Result>,
   'rejectParticipant' : ActorMethod<[string], [] | [Participant]>,
+  'removeLoginEmail' : ActorMethod<[string], Result>,
   'removeParticipantAssignment' : ActorMethod<
     [string, string, string],
     boolean
   >,
+  'removeUserLoginEmail' : ActorMethod<[string], Result>,
   'renewSubscription' : ActorMethod<[], Result_1>,
   'resendPasscode' : ActorMethod<[string], boolean>,
   'revokeAdmin' : ActorMethod<[Principal], Result>,
@@ -882,15 +929,11 @@ export interface _SERVICE {
   'setPhases' : ActorMethod<[Array<PhaseInput>], undefined>,
   'setReminderEmailSent' : ActorMethod<[bigint], undefined>,
   'setStripeSecretKey' : ActorMethod<[string], undefined>,
+  'submitCancellationRequest' : ActorMethod<[string, string], Result_2>,
   'submitDocumentForReview' : ActorMethod<
     [string, string, [] | [string]],
     VerificationDocument
   >,
-  /**
-   * / One-time claim: the first caller who finds _controller == anonymous
-   * / principal becomes the permanent controller.  Secure because the
-   * / deployer is the only one who can call this before any user interaction.
-   */
   'submitPhaseSignOff' : ActorMethod<
     [string, boolean, string],
     PhaseSignOffShared
@@ -902,6 +945,7 @@ export interface _SERVICE {
   'switchTrialTier' : ActorMethod<[SubscriptionTier], Result_1>,
   'testRSMeansConnection' : ActorMethod<[], string>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'unfreezeSubscription' : ActorMethod<[Principal], Result>,
   'unlinkStandardFromPhase' : ActorMethod<[string, string, string], boolean>,
   'updateAIAForm' : ActorMethod<[string, Array<[string, string]>], boolean>,
   'updateControllerProfile' : ActorMethod<[string, string, string], Result>,

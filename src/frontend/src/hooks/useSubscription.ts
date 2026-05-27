@@ -595,3 +595,220 @@ export function useAdminTrialMembers() {
     staleTime: 0,
   });
 }
+
+// ─── Admin subscription management hooks ─────────────────────────────────────
+
+export interface CancellationRequest {
+  id: string;
+  email: string;
+  requestedDate: string;
+  reason: string;
+  status: "Pending" | "Approved" | "Denied";
+}
+
+export interface ActiveRecurringCharge {
+  email: string;
+  tier: string;
+  monthlyCharge: number;
+  nextBillingDate: string;
+  status: string;
+}
+
+export interface ManagedSubscription {
+  email: string;
+  tier: string;
+  status: "Active" | "Frozen" | "Cancelled";
+  startDate: string;
+  frozenReason?: string;
+}
+
+const MOCK_CANCELLATION_REQUESTS: CancellationRequest[] = [
+  {
+    id: "cr-1",
+    email: "m.rivera@buildcorp.com",
+    requestedDate: "2026-05-24",
+    reason: "Project completed, no longer need the service.",
+    status: "Pending",
+  },
+  {
+    id: "cr-2",
+    email: "a.nguyen@homeconstruct.com",
+    requestedDate: "2026-05-26",
+    reason: "Budget constraints for the quarter.",
+    status: "Pending",
+  },
+];
+
+const MOCK_MANAGED_SUBSCRIPTIONS: ManagedSubscription[] = [
+  {
+    email: "m.rivera@buildcorp.com",
+    tier: "1-Year $299/mo",
+    status: "Active",
+    startDate: "2026-01-01",
+  },
+  {
+    email: "s.chen@archdesign.com",
+    tier: "5-Year $199/mo",
+    status: "Active",
+    startDate: "2025-06-01",
+  },
+  {
+    email: "j.okafor@civilworks.com",
+    tier: "10-Year $99/mo",
+    status: "Active",
+    startDate: "2024-03-15",
+  },
+  {
+    email: "r.patel@urbandev.com",
+    tier: "5-Year $199/mo",
+    status: "Frozen",
+    startDate: "2026-02-01",
+    frozenReason: "Payment dispute under review.",
+  },
+];
+
+export function useGetAllCancellationRequests() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery<CancellationRequest[]>({
+    queryKey: ["allCancellationRequests"],
+    queryFn: async () => {
+      if (!actor) return MOCK_CANCELLATION_REQUESTS;
+      const a = actor as unknown as {
+        getAllCancellationRequests: () => Promise<CancellationRequest[]>;
+      };
+      if (typeof a.getAllCancellationRequests !== "function")
+        return MOCK_CANCELLATION_REQUESTS;
+      return a.getAllCancellationRequests();
+    },
+    enabled: !!actor && !isFetching,
+    staleTime: 0,
+  });
+}
+
+export function useApproveCancellationRequest() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation<void, Error, { requestId: string }>({
+    mutationFn: async ({ requestId }) => {
+      if (!actor) throw new Error("Actor not available");
+      const a = actor as unknown as {
+        approveCancellationRequest: (
+          id: string,
+        ) => Promise<{ __kind__: string; err?: string }>;
+      };
+      if (typeof a.approveCancellationRequest !== "function") return;
+      const res = await a.approveCancellationRequest(requestId);
+      if (res && res.__kind__ === "err") throw new Error(res.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allCancellationRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["managedSubscriptions"] });
+    },
+  });
+}
+
+export function useDenyCancellationRequest() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation<void, Error, { requestId: string }>({
+    mutationFn: async ({ requestId }) => {
+      if (!actor) throw new Error("Actor not available");
+      const a = actor as unknown as {
+        denyCancellationRequest: (
+          id: string,
+        ) => Promise<{ __kind__: string; err?: string }>;
+      };
+      if (typeof a.denyCancellationRequest !== "function") return;
+      const res = await a.denyCancellationRequest(requestId);
+      if (res && res.__kind__ === "err") throw new Error(res.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allCancellationRequests"] });
+    },
+  });
+}
+
+export function useDirectCancelSubscription() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation<void, Error, { email: string }>({
+    mutationFn: async ({ email }) => {
+      if (!actor) throw new Error("Actor not available");
+      const a = actor as unknown as {
+        directCancelSubscription: (
+          email: string,
+        ) => Promise<{ __kind__: string; err?: string }>;
+      };
+      if (typeof a.directCancelSubscription !== "function") return;
+      const res = await a.directCancelSubscription(email);
+      if (res && res.__kind__ === "err") throw new Error(res.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["managedSubscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["adminSubscribers"] });
+    },
+  });
+}
+
+export function useGetManagedSubscriptions() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery<ManagedSubscription[]>({
+    queryKey: ["managedSubscriptions"],
+    queryFn: async () => {
+      if (!actor) return MOCK_MANAGED_SUBSCRIPTIONS;
+      const a = actor as unknown as {
+        getManagedSubscriptions: () => Promise<ManagedSubscription[]>;
+      };
+      if (typeof a.getManagedSubscriptions !== "function")
+        return MOCK_MANAGED_SUBSCRIPTIONS;
+      return a.getManagedSubscriptions();
+    },
+    enabled: !!actor && !isFetching,
+    staleTime: 0,
+  });
+}
+
+export function useFreezeSubscription() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation<void, Error, { email: string; reason: string }>({
+    mutationFn: async ({ email, reason }) => {
+      if (!actor) throw new Error("Actor not available");
+      const a = actor as unknown as {
+        freezeSubscription: (
+          email: string,
+          reason: string,
+        ) => Promise<{ __kind__: string; err?: string }>;
+      };
+      if (typeof a.freezeSubscription !== "function") return;
+      const res = await a.freezeSubscription(email, reason);
+      if (res && res.__kind__ === "err") throw new Error(res.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["managedSubscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["adminSubscribers"] });
+    },
+  });
+}
+
+export function useUnfreezeSubscription() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation<void, Error, { email: string }>({
+    mutationFn: async ({ email }) => {
+      if (!actor) throw new Error("Actor not available");
+      const a = actor as unknown as {
+        unfreezeSubscription: (
+          email: string,
+        ) => Promise<{ __kind__: string; err?: string }>;
+      };
+      if (typeof a.unfreezeSubscription !== "function") return;
+      const res = await a.unfreezeSubscription(email);
+      if (res && res.__kind__ === "err") throw new Error(res.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["managedSubscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["adminSubscribers"] });
+    },
+  });
+}

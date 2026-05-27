@@ -13,6 +13,7 @@ export const SubscriptionStatus = IDL.Variant({
   'active' : IDL.Null,
   'cancelled' : IDL.Null,
   'expired' : IDL.Null,
+  'frozen' : IDL.Null,
 });
 export const SubscriptionTier = IDL.Variant({
   'tier10year' : IDL.Null,
@@ -21,7 +22,9 @@ export const SubscriptionTier = IDL.Variant({
 });
 export const UserSubscription = IDL.Record({
   'status' : SubscriptionStatus,
+  'frozenReason' : IDL.Opt(IDL.Text),
   'trialStartAt' : IDL.Int,
+  'frozenAt' : IDL.Opt(IDL.Int),
   'stripeSubscriptionId' : IDL.Opt(IDL.Text),
   'userId' : IDL.Principal,
   'subscriptionStartAt' : IDL.Opt(IDL.Int),
@@ -62,6 +65,7 @@ export const Drawing = IDL.Record({
   'uploadedAt' : IDL.Int,
   'uploadedBy' : IDL.Text,
 });
+export const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
 export const NCCERCertStatus = IDL.Variant({
   'Expiring' : IDL.Null,
   'Current' : IDL.Null,
@@ -95,7 +99,6 @@ export const RenewalHistoryEntry = IDL.Record({
   'totalPaid' : IDL.Nat,
   'startDate' : IDL.Int,
 });
-export const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
 export const ApplyTemplateResult = IDL.Variant({
   'ok' : IDL.Record({ 'phasesCreated' : IDL.Nat }),
   'err' : IDL.Text,
@@ -263,11 +266,11 @@ export const Scenario = IDL.Record({
   'phaseOverrides' : IDL.Vec(PhaseOverride),
   'participantOverrides' : IDL.Vec(ParticipantOverride),
 });
-export const Result_4 = IDL.Variant({
+export const Result_6 = IDL.Variant({
   'ok' : IDL.Record({ 'name' : IDL.Text, 'email' : IDL.Text }),
   'err' : IDL.Text,
 });
-export const Result_3 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
+export const Result_5 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
 export const ShareLink = IDL.Record({
   'id' : IDL.Text,
   'token' : IDL.Text,
@@ -308,6 +311,19 @@ export const AdminRole = IDL.Record({
   'assignedAt' : IDL.Int,
   'assignedBy' : IDL.Principal,
   'assignedPrincipal' : IDL.Principal,
+});
+export const CancellationRequestStatus = IDL.Variant({
+  'pending' : IDL.Null,
+  'denied' : IDL.Null,
+  'approved' : IDL.Null,
+});
+export const CancellationRequest = IDL.Record({
+  'id' : IDL.Text,
+  'status' : CancellationRequestStatus,
+  'email' : IDL.Text,
+  'subscriberPrincipal' : IDL.Principal,
+  'requestedAt' : IDL.Int,
+  'reason' : IDL.Text,
 });
 export const RSMeansSettings = IDL.Record({
   'apiKey' : IDL.Opt(IDL.Text),
@@ -354,7 +370,7 @@ export const ComplianceItemShared = IDL.Record({
   'severity' : ComplianceSeverity,
   'phaseId' : IDL.Text,
 });
-export const Result_2 = IDL.Variant({
+export const Result_4 = IDL.Variant({
   'ok' : IDL.Record({
     'name' : IDL.Text,
     'email' : IDL.Text,
@@ -465,6 +481,10 @@ export const IdleTimeMode = IDL.Variant({
 export const IdleTimeSetting = IDL.Record({
   'defaultIdleMode' : IdleTimeMode,
   'projectId' : IDL.Text,
+});
+export const Result_3 = IDL.Variant({
+  'ok' : IDL.Vec(IDL.Text),
+  'err' : IDL.Text,
 });
 export const OACMeetingSession = IDL.Record({
   'id' : IDL.Text,
@@ -658,6 +678,10 @@ export const PhaseInput = IDL.Record({
   'endOffset' : TimeOffset,
   'startOffset' : TimeOffset,
 });
+export const Result_2 = IDL.Variant({
+  'ok' : CancellationRequest,
+  'err' : IDL.Text,
+});
 export const http_header = IDL.Record({
   'value' : IDL.Text,
   'name' : IDL.Text,
@@ -703,6 +727,7 @@ export const idlService = IDL.Service({
       [Drawing],
       [],
     ),
+  'addLoginEmail' : IDL.Func([IDL.Text], [Result], []),
   'addNCCERCertification' : IDL.Func(
       [
         IDL.Text,
@@ -719,11 +744,13 @@ export const idlService = IDL.Service({
     ),
   'addPaymentMethod' : IDL.Func([IDL.Text], [Result_1], []),
   'addRenewalHistoryEntry' : IDL.Func([RenewalHistoryEntry], [Result], []),
+  'addUserLoginEmail' : IDL.Func([IDL.Text, IDL.Text], [Result], []),
   'applyProjectTemplate' : IDL.Func(
       [IDL.Text, IDL.Text],
       [ApplyTemplateResult],
       [],
     ),
+  'approveCancellationRequest' : IDL.Func([IDL.Text], [Result], []),
   'approveCriticalChangePlan' : IDL.Func(
       [IDL.Text, IDL.Bool],
       [CriticalPlanApproval],
@@ -745,6 +772,7 @@ export const idlService = IDL.Service({
   'canAccessCompliance' : IDL.Func([ParticipantRole], [IDL.Bool], ['query']),
   'canManageCriticalPlans' : IDL.Func([ParticipantRole], [IDL.Bool], ['query']),
   'cancelTrial' : IDL.Func([], [Result], []),
+  'changeControllerPassword' : IDL.Func([IDL.Text], [Result], []),
   'changePassword' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [Result], []),
   'claimController' : IDL.Func([], [Result], []),
   'compareScenarios' : IDL.Func(
@@ -804,13 +832,16 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
     ),
+  'denyCancellationRequest' : IDL.Func([IDL.Text], [Result], []),
+  'directCancelSubscription' : IDL.Func([IDL.Principal], [Result], []),
   'dismissDrawingNotification' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'dismissReminder' : IDL.Func([IDL.Nat], [], []),
   'emailLogin' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
-      [Result_4],
+      [Result_6],
       [],
     ),
+  'emailOnlyLogin' : IDL.Func([IDL.Text], [Result_5], []),
   'endSession' : IDL.Func([IDL.Text], [], []),
   'enrollTrial' : IDL.Func(
       [SubscriptionTier, IDL.Text, IDL.Text],
@@ -819,8 +850,10 @@ export const idlService = IDL.Service({
     ),
   'expireSubscription' : IDL.Func([], [Result], []),
   'fetchRSMeansBenchmarks' : IDL.Func([IDL.Text], [IDL.Text], []),
-  'generateResetCode' : IDL.Func([IDL.Text], [Result_3], []),
+  'freezeSubscription' : IDL.Func([IDL.Principal, IDL.Text], [Result], []),
+  'generateResetCode' : IDL.Func([IDL.Text], [Result_5], []),
   'generateShareLink' : IDL.Func([IDL.Text], [ShareLink], []),
+  'generateUserResetCode' : IDL.Func([IDL.Text], [Result_5], []),
   'generateZoomMeeting' : IDL.Func(
       [IDL.Text, IDL.Text],
       [ZoomMeetingResult],
@@ -835,6 +868,25 @@ export const idlService = IDL.Service({
     ),
   'getActiveSessions' : IDL.Func([], [IDL.Vec(SessionSnapshot)], ['query']),
   'getAdminList' : IDL.Func([], [IDL.Vec(AdminRole)], ['query']),
+  'getAllCancellationRequests' : IDL.Func(
+      [],
+      [IDL.Vec(CancellationRequest)],
+      ['query'],
+    ),
+  'getAllUsers' : IDL.Func(
+      [],
+      [
+        IDL.Vec(
+          IDL.Record({
+            'name' : IDL.Text,
+            'createdAt' : IDL.Int,
+            'email' : IDL.Text,
+            'lastLogin' : IDL.Int,
+          })
+        ),
+      ],
+      ['query'],
+    ),
   'getAppSettings' : IDL.Func([], [AppSettings], ['query']),
   'getBankAccount' : IDL.Func([], [IDL.Opt(BankAccount)], ['query']),
   'getCertificationsForPhase' : IDL.Func(
@@ -847,7 +899,7 @@ export const idlService = IDL.Service({
       [IDL.Vec(ComplianceItemShared)],
       ['query'],
     ),
-  'getControllerProfile' : IDL.Func([], [Result_2], ['query']),
+  'getControllerProfile' : IDL.Func([], [Result_4], ['query']),
   'getCostCodeCompletion' : IDL.Func(
       [IDL.Nat, IDL.Nat],
       [IDL.Opt(IDL.Float64)],
@@ -901,6 +953,7 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getIdleTimeSetting' : IDL.Func([], [IDL.Opt(IdleTimeSetting)], ['query']),
+  'getLoginEmails' : IDL.Func([], [Result_3], ['query']),
   'getLoginHistory' : IDL.Func([], [IDL.Vec(SessionSnapshot)], ['query']),
   'getNCCERCertificationsForParticipant' : IDL.Func(
       [IDL.Text],
@@ -1006,6 +1059,12 @@ export const idlService = IDL.Service({
     ),
   'getSubscriptionStatus' : IDL.Func([], [SubscriptionStatus], ['query']),
   'getTrialLinks' : IDL.Func([], [IDL.Vec(TrialLink)], ['query']),
+  'getUserCancellationRequests' : IDL.Func(
+      [IDL.Text],
+      [IDL.Vec(CancellationRequest)],
+      ['query'],
+    ),
+  'getUserLoginEmails' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Text)], ['query']),
   'getUserSubscription' : IDL.Func([], [IDL.Opt(UserSubscription)], ['query']),
   'getZoomSettings' : IDL.Func([], [IDL.Opt(ZoomSettings)], ['query']),
   'isAdmin' : IDL.Func([IDL.Principal], [IDL.Bool], ['query']),
@@ -1024,11 +1083,13 @@ export const idlService = IDL.Service({
       [],
     ),
   'rejectParticipant' : IDL.Func([IDL.Text], [IDL.Opt(Participant)], []),
+  'removeLoginEmail' : IDL.Func([IDL.Text], [Result], []),
   'removeParticipantAssignment' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text],
       [IDL.Bool],
       [],
     ),
+  'removeUserLoginEmail' : IDL.Func([IDL.Text], [Result], []),
   'renewSubscription' : IDL.Func([], [Result_1], []),
   'resendPasscode' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'revokeAdmin' : IDL.Func([IDL.Principal], [Result], []),
@@ -1059,6 +1120,7 @@ export const idlService = IDL.Service({
   'setPhases' : IDL.Func([IDL.Vec(PhaseInput)], [], []),
   'setReminderEmailSent' : IDL.Func([IDL.Nat], [], []),
   'setStripeSecretKey' : IDL.Func([IDL.Text], [], []),
+  'submitCancellationRequest' : IDL.Func([IDL.Text, IDL.Text], [Result_2], []),
   'submitDocumentForReview' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [VerificationDocument],
@@ -1081,6 +1143,7 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'unfreezeSubscription' : IDL.Func([IDL.Principal], [Result], []),
   'unlinkStandardFromPhase' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text],
       [IDL.Bool],
@@ -1183,6 +1246,7 @@ export const idlFactory = ({ IDL }) => {
     'active' : IDL.Null,
     'cancelled' : IDL.Null,
     'expired' : IDL.Null,
+    'frozen' : IDL.Null,
   });
   const SubscriptionTier = IDL.Variant({
     'tier10year' : IDL.Null,
@@ -1191,7 +1255,9 @@ export const idlFactory = ({ IDL }) => {
   });
   const UserSubscription = IDL.Record({
     'status' : SubscriptionStatus,
+    'frozenReason' : IDL.Opt(IDL.Text),
     'trialStartAt' : IDL.Int,
+    'frozenAt' : IDL.Opt(IDL.Int),
     'stripeSubscriptionId' : IDL.Opt(IDL.Text),
     'userId' : IDL.Principal,
     'subscriptionStartAt' : IDL.Opt(IDL.Int),
@@ -1229,6 +1295,7 @@ export const idlFactory = ({ IDL }) => {
     'uploadedAt' : IDL.Int,
     'uploadedBy' : IDL.Text,
   });
+  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
   const NCCERCertStatus = IDL.Variant({
     'Expiring' : IDL.Null,
     'Current' : IDL.Null,
@@ -1262,7 +1329,6 @@ export const idlFactory = ({ IDL }) => {
     'totalPaid' : IDL.Nat,
     'startDate' : IDL.Int,
   });
-  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
   const ApplyTemplateResult = IDL.Variant({
     'ok' : IDL.Record({ 'phasesCreated' : IDL.Nat }),
     'err' : IDL.Text,
@@ -1430,11 +1496,11 @@ export const idlFactory = ({ IDL }) => {
     'phaseOverrides' : IDL.Vec(PhaseOverride),
     'participantOverrides' : IDL.Vec(ParticipantOverride),
   });
-  const Result_4 = IDL.Variant({
+  const Result_6 = IDL.Variant({
     'ok' : IDL.Record({ 'name' : IDL.Text, 'email' : IDL.Text }),
     'err' : IDL.Text,
   });
-  const Result_3 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
+  const Result_5 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
   const ShareLink = IDL.Record({
     'id' : IDL.Text,
     'token' : IDL.Text,
@@ -1475,6 +1541,19 @@ export const idlFactory = ({ IDL }) => {
     'assignedAt' : IDL.Int,
     'assignedBy' : IDL.Principal,
     'assignedPrincipal' : IDL.Principal,
+  });
+  const CancellationRequestStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'denied' : IDL.Null,
+    'approved' : IDL.Null,
+  });
+  const CancellationRequest = IDL.Record({
+    'id' : IDL.Text,
+    'status' : CancellationRequestStatus,
+    'email' : IDL.Text,
+    'subscriberPrincipal' : IDL.Principal,
+    'requestedAt' : IDL.Int,
+    'reason' : IDL.Text,
   });
   const RSMeansSettings = IDL.Record({
     'apiKey' : IDL.Opt(IDL.Text),
@@ -1521,7 +1600,7 @@ export const idlFactory = ({ IDL }) => {
     'severity' : ComplianceSeverity,
     'phaseId' : IDL.Text,
   });
-  const Result_2 = IDL.Variant({
+  const Result_4 = IDL.Variant({
     'ok' : IDL.Record({
       'name' : IDL.Text,
       'email' : IDL.Text,
@@ -1633,6 +1712,7 @@ export const idlFactory = ({ IDL }) => {
     'defaultIdleMode' : IdleTimeMode,
     'projectId' : IDL.Text,
   });
+  const Result_3 = IDL.Variant({ 'ok' : IDL.Vec(IDL.Text), 'err' : IDL.Text });
   const OACMeetingSession = IDL.Record({
     'id' : IDL.Text,
     'zoomMeetingId' : IDL.Opt(IDL.Text),
@@ -1825,6 +1905,10 @@ export const idlFactory = ({ IDL }) => {
     'endOffset' : TimeOffset,
     'startOffset' : TimeOffset,
   });
+  const Result_2 = IDL.Variant({
+    'ok' : CancellationRequest,
+    'err' : IDL.Text,
+  });
   const http_header = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
   const http_request_result = IDL.Record({
     'status' : IDL.Nat,
@@ -1867,6 +1951,7 @@ export const idlFactory = ({ IDL }) => {
         [Drawing],
         [],
       ),
+    'addLoginEmail' : IDL.Func([IDL.Text], [Result], []),
     'addNCCERCertification' : IDL.Func(
         [
           IDL.Text,
@@ -1883,11 +1968,13 @@ export const idlFactory = ({ IDL }) => {
       ),
     'addPaymentMethod' : IDL.Func([IDL.Text], [Result_1], []),
     'addRenewalHistoryEntry' : IDL.Func([RenewalHistoryEntry], [Result], []),
+    'addUserLoginEmail' : IDL.Func([IDL.Text, IDL.Text], [Result], []),
     'applyProjectTemplate' : IDL.Func(
         [IDL.Text, IDL.Text],
         [ApplyTemplateResult],
         [],
       ),
+    'approveCancellationRequest' : IDL.Func([IDL.Text], [Result], []),
     'approveCriticalChangePlan' : IDL.Func(
         [IDL.Text, IDL.Bool],
         [CriticalPlanApproval],
@@ -1913,6 +2000,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'cancelTrial' : IDL.Func([], [Result], []),
+    'changeControllerPassword' : IDL.Func([IDL.Text], [Result], []),
     'changePassword' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [Result], []),
     'claimController' : IDL.Func([], [Result], []),
     'compareScenarios' : IDL.Func(
@@ -1972,13 +2060,16 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
       ),
+    'denyCancellationRequest' : IDL.Func([IDL.Text], [Result], []),
+    'directCancelSubscription' : IDL.Func([IDL.Principal], [Result], []),
     'dismissDrawingNotification' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'dismissReminder' : IDL.Func([IDL.Nat], [], []),
     'emailLogin' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
-        [Result_4],
+        [Result_6],
         [],
       ),
+    'emailOnlyLogin' : IDL.Func([IDL.Text], [Result_5], []),
     'endSession' : IDL.Func([IDL.Text], [], []),
     'enrollTrial' : IDL.Func(
         [SubscriptionTier, IDL.Text, IDL.Text],
@@ -1987,8 +2078,10 @@ export const idlFactory = ({ IDL }) => {
       ),
     'expireSubscription' : IDL.Func([], [Result], []),
     'fetchRSMeansBenchmarks' : IDL.Func([IDL.Text], [IDL.Text], []),
-    'generateResetCode' : IDL.Func([IDL.Text], [Result_3], []),
+    'freezeSubscription' : IDL.Func([IDL.Principal, IDL.Text], [Result], []),
+    'generateResetCode' : IDL.Func([IDL.Text], [Result_5], []),
     'generateShareLink' : IDL.Func([IDL.Text], [ShareLink], []),
+    'generateUserResetCode' : IDL.Func([IDL.Text], [Result_5], []),
     'generateZoomMeeting' : IDL.Func(
         [IDL.Text, IDL.Text],
         [ZoomMeetingResult],
@@ -2003,6 +2096,25 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getActiveSessions' : IDL.Func([], [IDL.Vec(SessionSnapshot)], ['query']),
     'getAdminList' : IDL.Func([], [IDL.Vec(AdminRole)], ['query']),
+    'getAllCancellationRequests' : IDL.Func(
+        [],
+        [IDL.Vec(CancellationRequest)],
+        ['query'],
+      ),
+    'getAllUsers' : IDL.Func(
+        [],
+        [
+          IDL.Vec(
+            IDL.Record({
+              'name' : IDL.Text,
+              'createdAt' : IDL.Int,
+              'email' : IDL.Text,
+              'lastLogin' : IDL.Int,
+            })
+          ),
+        ],
+        ['query'],
+      ),
     'getAppSettings' : IDL.Func([], [AppSettings], ['query']),
     'getBankAccount' : IDL.Func([], [IDL.Opt(BankAccount)], ['query']),
     'getCertificationsForPhase' : IDL.Func(
@@ -2015,7 +2127,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(ComplianceItemShared)],
         ['query'],
       ),
-    'getControllerProfile' : IDL.Func([], [Result_2], ['query']),
+    'getControllerProfile' : IDL.Func([], [Result_4], ['query']),
     'getCostCodeCompletion' : IDL.Func(
         [IDL.Nat, IDL.Nat],
         [IDL.Opt(IDL.Float64)],
@@ -2069,6 +2181,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getIdleTimeSetting' : IDL.Func([], [IDL.Opt(IdleTimeSetting)], ['query']),
+    'getLoginEmails' : IDL.Func([], [Result_3], ['query']),
     'getLoginHistory' : IDL.Func([], [IDL.Vec(SessionSnapshot)], ['query']),
     'getNCCERCertificationsForParticipant' : IDL.Func(
         [IDL.Text],
@@ -2182,6 +2295,12 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getSubscriptionStatus' : IDL.Func([], [SubscriptionStatus], ['query']),
     'getTrialLinks' : IDL.Func([], [IDL.Vec(TrialLink)], ['query']),
+    'getUserCancellationRequests' : IDL.Func(
+        [IDL.Text],
+        [IDL.Vec(CancellationRequest)],
+        ['query'],
+      ),
+    'getUserLoginEmails' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Text)], ['query']),
     'getUserSubscription' : IDL.Func(
         [],
         [IDL.Opt(UserSubscription)],
@@ -2204,11 +2323,13 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'rejectParticipant' : IDL.Func([IDL.Text], [IDL.Opt(Participant)], []),
+    'removeLoginEmail' : IDL.Func([IDL.Text], [Result], []),
     'removeParticipantAssignment' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text],
         [IDL.Bool],
         [],
       ),
+    'removeUserLoginEmail' : IDL.Func([IDL.Text], [Result], []),
     'renewSubscription' : IDL.Func([], [Result_1], []),
     'resendPasscode' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'revokeAdmin' : IDL.Func([IDL.Principal], [Result], []),
@@ -2243,6 +2364,11 @@ export const idlFactory = ({ IDL }) => {
     'setPhases' : IDL.Func([IDL.Vec(PhaseInput)], [], []),
     'setReminderEmailSent' : IDL.Func([IDL.Nat], [], []),
     'setStripeSecretKey' : IDL.Func([IDL.Text], [], []),
+    'submitCancellationRequest' : IDL.Func(
+        [IDL.Text, IDL.Text],
+        [Result_2],
+        [],
+      ),
     'submitDocumentForReview' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
         [VerificationDocument],
@@ -2265,6 +2391,7 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
+    'unfreezeSubscription' : IDL.Func([IDL.Principal], [Result], []),
     'unlinkStandardFromPhase' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text],
         [IDL.Bool],

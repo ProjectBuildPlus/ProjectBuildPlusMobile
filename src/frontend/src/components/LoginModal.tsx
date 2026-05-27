@@ -5,6 +5,7 @@ import {
   clearSession,
   setSession,
   useEmailLogin,
+  useEmailOnlyLogin,
   useResetCode,
   useValidateResetCode,
 } from "@/hooks/useAuth";
@@ -37,6 +38,9 @@ interface LoginModalProps {
 
 export function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [view, setView] = useState<ModalView>("login");
+  const [loginMode, setLoginMode] = useState<"email-only" | "password">(
+    "email-only",
+  );
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -49,12 +53,31 @@ export function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [error, setError] = useState("");
 
   const emailLogin = useEmailLogin();
+  const emailOnlyLogin = useEmailOnlyLogin();
   const generateCode = useResetCode();
   const validateCode = useValidateResetCode();
   const { login } = useInternetIdentity();
 
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) onClose();
+  }
+
+  // ── Email-only login: no password required
+  async function handleEmailOnlyLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await emailOnlyLogin.mutateAsync({ email });
+      clearSession();
+      setSession({ email, name: email, isLoggedIn: true, token: res.token });
+      onSuccess();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Email not recognized. Please contact the app controller.",
+      );
+    }
   }
 
   // ── Step 1: sign in with email + password
@@ -146,7 +169,82 @@ export function LoginModal({ onClose, onSuccess }: LoginModalProps) {
 
         <div className="px-6 py-6">
           {/* ── LOGIN VIEW ── */}
-          {view === "login" && (
+          {view === "login" && loginMode === "email-only" && (
+            <form
+              onSubmit={handleEmailOnlyLogin}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-white/80 text-sm" htmlFor="login-email">
+                  Email
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
+                  <Input
+                    id="login-email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="pwarre12@mail.ccsf.edu"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-9 bg-white/5 border-white/15 text-white placeholder:text-white/30 focus:border-amber-400/60"
+                    required
+                    data-ocid="login_modal.email_input"
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <p
+                  className="text-sm text-red-400"
+                  data-ocid="login_modal.error_state"
+                >
+                  {error}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={emailOnlyLogin.isPending}
+                className="w-full bg-gradient-to-r from-amber-400 to-teal-400 text-slate-900 font-semibold hover:scale-[1.02] transition-all"
+                data-ocid="login_modal.submit_button"
+              >
+                {emailOnlyLogin.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Signing
+                    in...
+                  </>
+                ) : (
+                  "Enter Project"
+                )}
+              </Button>
+
+              <div className="flex flex-col items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginMode("password");
+                    setError("");
+                  }}
+                  className="text-sm text-amber-400/80 hover:text-amber-300 transition-colors"
+                  data-ocid="login_modal.password_login_link"
+                >
+                  Sign in with password
+                </button>
+                <button
+                  type="button"
+                  onClick={() => login()}
+                  className="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors"
+                  data-ocid="login_modal.ii_login_link"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Sign in with Internet Identity instead
+                </button>
+              </div>
+            </form>
+          )}
+
+          {view === "login" && loginMode === "password" && (
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label className="text-white/80 text-sm" htmlFor="login-email">
@@ -239,6 +337,17 @@ export function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   data-ocid="login_modal.forgot_password_link"
                 >
                   Forgot Password?
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginMode("email-only");
+                    setError("");
+                  }}
+                  className="text-sm text-white/40 hover:text-white/70 transition-colors"
+                  data-ocid="login_modal.email_only_link"
+                >
+                  ← Back to email-only sign in
                 </button>
                 <button
                   type="button"

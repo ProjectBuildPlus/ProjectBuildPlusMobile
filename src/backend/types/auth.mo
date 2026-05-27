@@ -22,6 +22,7 @@ module {
     var name  : Text;
     var email : Text;
     var phone : Text;
+    var passwordHash : Text;
   };
 
   /// One recorded login session entry.

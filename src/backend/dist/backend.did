@@ -40,6 +40,8 @@ type UserSubscription =
    cancelledAt: opt int;
    chargeScheduledAt: int;
    currentPlan: SubscriptionTier;
+   frozenAt: opt int;
+   frozenReason: opt text;
    status: SubscriptionStatus;
    stripeCustomerId: opt text;
    stripePaymentMethodId: opt text;
@@ -84,6 +86,7 @@ type SubscriptionStatus =
    active;
    cancelled;
    expired;
+   frozen;
    trial;
  };
 type StandardStatus = 
@@ -190,7 +193,7 @@ type ReviewRequest =
    requestedBy: text;
    status: text;
  };
-type Result_4 = 
+type Result_6 = 
  variant {
    err: text;
    ok: record {
@@ -198,12 +201,12 @@ type Result_4 =
          name: text;
        };
  };
-type Result_3 = 
+type Result_5 = 
  variant {
    err: text;
    ok: text;
  };
-type Result_2 = 
+type Result_4 = 
  variant {
    err: text;
    ok: record {
@@ -211,6 +214,16 @@ type Result_2 =
          name: text;
          phone: text;
        };
+ };
+type Result_3 = 
+ variant {
+   err: text;
+   ok: vec text;
+ };
+type Result_2 = 
+ variant {
+   err: text;
+   ok: CancellationRequest;
  };
 type Result_1 = 
  variant {
@@ -737,6 +750,21 @@ type ComplianceItemShared =
    standardId: text;
    status: ComplianceStatus;
  };
+type CancellationRequestStatus = 
+ variant {
+   approved;
+   denied;
+   pending;
+ };
+type CancellationRequest = 
+ record {
+   email: text;
+   id: text;
+   reason: text;
+   requestedAt: int;
+   status: CancellationRequestStatus;
+   subscriberPrincipal: principal;
+ };
 type CPMPhaseInput = 
  record {
    dependencies: vec text;
@@ -800,13 +828,16 @@ service : {
   activateSubscription: (stripeSubscriptionId: text) -> (Result_1);
   addDrawing: (name: text, category: DrawingCategory, fileType:
    DrawingFileType, storageKey: text, description: text) -> (Drawing);
+  addLoginEmail: (newEmail: text) -> (Result);
   addNCCERCertification: (participantId: text, trade: text, discipline: 
    text, level: text, state: text, certNumber: text, issuedAt: int,
    expiresAt: int) -> (NCCERCertShared);
   addPaymentMethod: (setupIntentId: text) -> (Result_1);
   addRenewalHistoryEntry: (entry: RenewalHistoryEntry) -> (Result);
+  addUserLoginEmail: (targetEmail: text, newEmail: text) -> (Result);
   applyProjectTemplate: (categoryId: text, subtopicId: text) ->
    (ApplyTemplateResult);
+  approveCancellationRequest: (requestId: text) -> (Result);
   approveCriticalChangePlan: (planId: text, approved: bool) ->
    (CriticalPlanApproval);
   approveDocumentReview: (user: principal, documentType: text) -> (Result);
@@ -819,6 +850,7 @@ service : {
   canAccessCompliance: (role: ParticipantRole) -> (bool) query;
   canManageCriticalPlans: (role: ParticipantRole) -> (bool) query;
   cancelTrial: () -> (Result);
+  changeControllerPassword: (newPassword: text) -> (Result);
   changePassword: (email: text, currentPassword: text, newPassword: text) ->
    (Result);
   /// One-time claim: the first caller who finds _controller == anonymous
@@ -861,29 +893,42 @@ service : {
                                    err: text;
                                    ok;
                                  });
+  denyCancellationRequest: (requestId: text) -> (Result);
+  directCancelSubscription: (target: principal) -> (Result);
   dismissDrawingNotification: (id: text) -> (bool);
   dismissReminder: (day: nat) -> ();
   emailLogin: (email: text, password: text, userAgent: text, ipAddress:
-   text) -> (Result_4);
+   text) -> (Result_6);
+  emailOnlyLogin: (email: text) -> (Result_5);
   endSession: (sessionId: text) -> ();
   enrollTrial: (tier: SubscriptionTier, stripeCustomerId: text,
    stripePaymentMethodId: text) -> (Result_1);
   expireSubscription: () -> (Result);
   fetchRSMeansBenchmarks: (csiDivision: text) -> (text);
-  generateResetCode: (email: text) -> (Result_3);
+  freezeSubscription: (target: principal, reason: text) -> (Result);
+  generateResetCode: (email: text) -> (Result_5);
   generateShareLink: (projectId: text) -> (ShareLink);
+  generateUserResetCode: (email: text) -> (Result_5);
   generateZoomMeeting: (sessionId: text, topic: text) -> (ZoomMeetingResult);
   getAIAForm: (formId: text) -> (opt AIAFormEntry) query;
   getAIAForms: (sessionId: text) -> (vec AIAFormEntry) query;
   getActiveFilter: () -> (opt text, opt text) query;
   getActiveSessions: () -> (vec SessionSnapshot) query;
   getAdminList: () -> (vec AdminRole) query;
+  getAllCancellationRequests: () -> (vec CancellationRequest) query;
+  getAllUsers: () ->
+   (vec record {
+          createdAt: int;
+          email: text;
+          lastLogin: int;
+          name: text;
+        }) query;
   getAppSettings: () -> (AppSettings) query;
   getBankAccount: () -> (opt BankAccount) query;
   getCertificationsForPhase: (phaseId: text) -> (vec NCCERCertShared) query;
   getComplianceItemsForPhase: (phaseId: text) ->
    (vec ComplianceItemShared) query;
-  getControllerProfile: () -> (Result_2) query;
+  getControllerProfile: () -> (Result_4) query;
   getCostCodeCompletion: (phaseId: nat, codeId: nat) -> (opt float64) query;
   getCostCodesForPhase: (phaseId: nat) ->
    (variant {
@@ -903,6 +948,7 @@ service : {
   getFilteredStandards: (projectCategory: text, projectSubtype: text, state:
    opt text) -> (vec SafetyStandard) query;
   getIdleTimeSetting: () -> (opt IdleTimeSetting) query;
+  getLoginEmails: () -> (Result_3) query;
   getLoginHistory: () -> (vec SessionSnapshot) query;
   getNCCERCertificationsForParticipant: (participantId: text) ->
    (vec NCCERCertShared) query;
@@ -946,6 +992,9 @@ service : {
   getStandardsForPhase: (phaseId: text) -> (vec SafetyStandard) query;
   getSubscriptionStatus: () -> (SubscriptionStatus) query;
   getTrialLinks: () -> (vec TrialLink) query;
+  getUserCancellationRequests: (email: text) ->
+   (vec CancellationRequest) query;
+  getUserLoginEmails: (_targetEmail: text) -> (vec text) query;
   getUserSubscription: () -> (opt UserSubscription) query;
   getZoomSettings: () -> (opt ZoomSettings) query;
   isAdmin: (p: principal) -> (bool) query;
@@ -958,8 +1007,10 @@ service : {
   registerEmailUser: (email: text, password: text, name: text, phone:
    text) -> (Result);
   rejectParticipant: (id: text) -> (opt Participant);
+  removeLoginEmail: (email: text) -> (Result);
   removeParticipantAssignment: (participantId: text, phaseId: text,
    costCodeId: text) -> (bool);
+  removeUserLoginEmail: (email: text) -> (Result);
   renewSubscription: () -> (Result_1);
   resendPasscode: (id: text) -> (bool);
   revokeAdmin: (p: principal) -> (Result);
@@ -987,17 +1038,16 @@ service : {
   setPhases: (inputs: vec PhaseInput) -> ();
   setReminderEmailSent: (day: nat) -> ();
   setStripeSecretKey: (secretKey: text) -> ();
+  submitCancellationRequest: (email: text, reason: text) -> (Result_2);
   submitDocumentForReview: (documentType: text, storageKey: text,
    stripeSessionId: opt text) -> (VerificationDocument);
-  /// One-time claim: the first caller who finds _controller == anonymous
-  /// principal becomes the permanent controller.  Secure because the
-  /// deployer is the only one who can call this before any user interaction.
   submitPhaseSignOff: (phaseId: text, approved: bool, comments: text) ->
    (PhaseSignOffShared);
   submitPlanForApproval: (id: text) -> (opt CriticalChangePlanShared);
   switchTrialTier: (newTier: SubscriptionTier) -> (Result_1);
   testRSMeansConnection: () -> (text);
   transform: (input: TransformationInput) -> (TransformationOutput) query;
+  unfreezeSubscription: (target: principal) -> (Result);
   unlinkStandardFromPhase: (phaseId: text, csiCode: text, standardId:
    text) -> (bool);
   updateAIAForm: (formId: text, fieldData: vec record {

@@ -1,6 +1,7 @@
 import { 
   AccessControlMode,
   BaselineType,
+  CancellationRequestStatus,
   ComplianceSeverity,
   ComplianceStatus,
   CriticalPlanStatus,
@@ -664,7 +665,15 @@ export const mockBackend = {
   claimController: async () => ({ __kind__: "ok" as const, ok: null }),
   revokeAdmin: async () => ({ __kind__: "ok" as const, ok: null }),
   setReminderEmailSent: async () => undefined,
-  // ── Email auth mocks ────────────────────────────────────────────────────
+  // ── Email-only login / account settings mocks ───────────────────────────
+  emailOnlyLogin: async (_email: string, _userAgent?: string, _ipAddress?: string) => ({
+    __kind__: "ok" as const,
+    ok: "mock-session-token-12345",
+  }),
+  getLoginEmails: async () => ({ __kind__: "ok" as const, ok: ["pwarre12@mail.ccsf.edu"] }),
+  addLoginEmail: async (_email: string) => ({ __kind__: "ok" as const, ok: null }),
+  removeLoginEmail: async (_email: string) => ({ __kind__: "ok" as const, ok: null }),
+  changeControllerPassword: async (_newPassword: string) => ({ __kind__: "ok" as const, ok: null }),
   emailLogin: async (_email: string, _password: string, _userAgent?: string, _ipAddress?: string) => ({
     __kind__: "ok" as const,
     ok: { name: "Joseph Warren", email: "pwarre12@mail.ccsf.edu" },
@@ -848,4 +857,29 @@ export const mockBackend = {
     },
   ],
   dismissDrawingNotification: async () => true,
+  // ── Admin control panel stubs ────────────────────────────────────────────
+  addUserLoginEmail: async () => ({ __kind__: "ok" as const, ok: null }),
+  approveCancellationRequest: async () => ({ __kind__: "ok" as const, ok: null }),
+  denyCancellationRequest: async () => ({ __kind__: "ok" as const, ok: null }),
+  directCancelSubscription: async () => ({ __kind__: "ok" as const, ok: null }),
+  freezeSubscription: async () => ({ __kind__: "ok" as const, ok: null }),
+  unfreezeSubscription: async () => ({ __kind__: "ok" as const, ok: null }),
+  generateUserResetCode: async () => ({ __kind__: "ok" as const, ok: "ABC123" }),
+  getAllCancellationRequests: async () => [],
+  getAllUsers: async () => [],
+  getManagedSubscriptions: async () => [],
+  getUserLoginEmails: async () => [],
+  removeUserLoginEmail: async () => ({ __kind__: "ok" as const, ok: null }),
+  submitCancellationRequest: async (email: string, reason: string) => ({
+    __kind__: "ok" as const,
+    ok: {
+      id: `cr-${Date.now()}`,
+      email,
+      reason,
+      status: CancellationRequestStatus.pending,
+      subscriberPrincipal: { _isPrincipal: true, _arr: new Uint8Array(), toText: () => "aaaaa-aa" } as unknown as import("@dfinity/principal").Principal,
+      requestedAt: BigInt(Date.now() * 1_000_000),
+    },
+  }),
+  getUserCancellationRequests: async () => [],
 } as backendInterface & Record<string, (...args: unknown[]) => unknown>;

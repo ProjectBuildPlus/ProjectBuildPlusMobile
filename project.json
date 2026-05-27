@@ -1,29 +1,27 @@
 {
-  "overview": "Project Build Plus is a comprehensive construction management platform with scheduling, cost control, participant management, compliance, OAC meetings, and a Drawings & Documents module for viewing, uploading, and reviewing project drawings.",
+  "overview": "Project Build Plus is a comprehensive construction management platform with advanced scheduling, cost control, resource management, compliance tracking, and collaboration tools.",
   "features": [
-    "Drawings & Documents module with type tabs (Photographs, Blueprints, Architect, Construction, CAD, Engineering)",
-    "File upload with progress bar for JPG, PNG, PDF, DWG, DXF files",
-    "Review requests that trigger dashboard notifications and auto-attach to OAC Meeting addendums",
-    "OAC Meeting addendum management with edit and remove options",
-    "Share drawings with all participants and Zoom meetings",
-    "Dashboard notification center for active review requests",
-    "Advanced scheduling with crashing and resource leveling",
-    "Earned Value Management and cash flow curves",
-    "Stripe-powered subscription management with three pricing tiers",
-    "Controller account with feature locks and admin oversight"
+    "Milestones timeline and bar chart with PDF export",
+    "Custom milestone entry with edit and delete",
+    "Milestone cards link to Critical Path activity detail",
+    "AutoDesk document upload and organization tab",
+    "AutoDesk gateway with cloud service links and subscription button",
+    "Gantt-style critical path scheduling",
+    "Cash flow and earned value management",
+    "Drawings and documents module",
+    "OAC Meeting collaboration tools",
+    "Subscription management and admin controls"
   ],
   "category": "construction-management",
   "tags": [
     "construction",
     "project-management",
+    "scheduling",
+    "critical-path",
+    "milestones",
+    "autodesk",
     "drawings",
-    "documents",
-    "blueprints",
-    "cad-files",
-    "oac-meetings",
-    "participants",
-    "compliance",
-    "scheduling"
+    "cost-management"
   ],
-  "last_updated": "2026-05-24T09:48:27.083Z"
+  "last_updated": "2026-05-27T01:33:09.559Z"
 }

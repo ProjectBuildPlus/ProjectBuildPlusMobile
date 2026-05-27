@@ -9,6 +9,26 @@ type AIAFormEntry__1012611809 =
     submittedAt : Int;
     submittedByRole : Text
   };
+type AIAFormEntry__104932410 =
+  {
+    fieldData : [(Text, Text)];
+    formType : {#Addendum; #G701; #G702; #G703; #MeetingMinutes};
+    id : Text;
+    lastModified : Int;
+    sessionId : Text;
+    submittedAt : Int;
+    submittedByRole : Text
+  };
+type AIAFormEntry__134392114 =
+  {
+    fieldData : [(Text, Text)];
+    formType : {#Addendum; #G701; #G702; #G703; #MeetingMinutes};
+    id : Text;
+    lastModified : Int;
+    sessionId : Text;
+    submittedAt : Int;
+    submittedByRole : Text
+  };
 type AIAFormEntry__136437563 =
   {
     fieldData : [(Text, Text)];
@@ -99,6 +119,16 @@ type AIAFormEntry__605870417 =
     submittedAt : Int;
     submittedByRole : Text
   };
+type AIAFormEntry__641373310 =
+  {
+    fieldData : [(Text, Text)];
+    formType : {#Addendum; #G701; #G702; #G703; #MeetingMinutes};
+    id : Text;
+    lastModified : Int;
+    sessionId : Text;
+    submittedAt : Int;
+    submittedByRole : Text
+  };
 type AIAFormEntry__804457009 =
   {
     fieldData : [(Text, Text)];
@@ -126,15 +156,20 @@ type AccessControlMode__22883157 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__258602051 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__2690100 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__366601370 = {#ProjectManagerOnly; #RoleGated};
+type AccessControlMode__536379894 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__556789705 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__658503899 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__689442683 = {#ProjectManagerOnly; #RoleGated};
+type AccessControlMode__70850637 = {#ProjectManagerOnly; #RoleGated};
+type AccessControlMode__781163482 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__809597531 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__823792364 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__854035334 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__893655360 = {#ProjectManagerOnly; #RoleGated};
 type AccessControlMode__933878053 = {#ProjectManagerOnly; #RoleGated};
 type AdminRole__143536028 =
+  {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
+type AdminRole__230737838 =
   {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
 type AdminRole__248310267 =
   {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
@@ -146,9 +181,31 @@ type AdminRole__76636985 =
   {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
 type AdminRole__824934872 =
   {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
+type AdminRole__871711360 =
+  {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
+type AdminRole__874345866 =
+  {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
 type AdminRole__95788405 =
   {assignedAt : Int; assignedBy : Principal; assignedPrincipal : Principal};
+type BankAccount__308491217 =
+  {
+    accountHolderName : Text;
+    accountNumberLast4 : Text;
+    connectedToStripe : Bool;
+    isVerified : Bool;
+    nextPayoutDate : ?Text;
+    routingNumber : Text
+  };
 type BankAccount__352902020 =
+  {
+    accountHolderName : Text;
+    accountNumberLast4 : Text;
+    connectedToStripe : Bool;
+    isVerified : Bool;
+    nextPayoutDate : ?Text;
+    routingNumber : Text
+  };
+type BankAccount__742872797 =
   {
     accountHolderName : Text;
     accountNumberLast4 : Text;
@@ -174,6 +231,48 @@ type BankAccount__962428750 =
     isVerified : Bool;
     nextPayoutDate : ?Text;
     routingNumber : Text
+  };
+type CancellationRequestStatus__107195879 = {#approved; #denied; #pending};
+type CancellationRequestStatus__404495078 = {#approved; #denied; #pending};
+type CancellationRequest__803992498 =
+  {
+    email : Text;
+    id : Text;
+    reason : Text;
+    requestedAt : Int;
+    status : CancellationRequestStatus__107195879;
+    subscriberPrincipal : Principal
+  };
+type CancellationRequest__930179577 =
+  {
+    email : Text;
+    id : Text;
+    reason : Text;
+    requestedAt : Int;
+    status : CancellationRequestStatus__404495078;
+    subscriberPrincipal : Principal
+  };
+type ComplianceItem__1028734847 =
+  {
+    var checkedAt : Int;
+    var checkedBy : Text;
+    id : Text;
+    var notes : Text;
+    phaseId : Text;
+    var severity : ComplianceSeverity__420475765;
+    standardId : Text;
+    var status : ComplianceStatus__174529485
+  };
+type ComplianceItem__108691193 =
+  {
+    var checkedAt : Int;
+    var checkedBy : Text;
+    id : Text;
+    var notes : Text;
+    phaseId : Text;
+    var severity : ComplianceSeverity__681275527;
+    standardId : Text;
+    var status : ComplianceStatus__661359434
   };
 type ComplianceItem__149572897 =
   {
@@ -285,17 +384,33 @@ type ComplianceItem__933280627 =
     standardId : Text;
     var status : ComplianceStatus__162260647
   };
+type ComplianceItem__990161850 =
+  {
+    var checkedAt : Int;
+    var checkedBy : Text;
+    id : Text;
+    var notes : Text;
+    phaseId : Text;
+    var severity : ComplianceSeverity__595285184;
+    standardId : Text;
+    var status : ComplianceStatus__13815432
+  };
 type ComplianceSeverity__1023831017 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__1063699360 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__142540237 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__227862107 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__243443938 = {#Critical; #Major; #Minor; #None};
+type ComplianceSeverity__420475765 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__536629746 = {#Critical; #Major; #Minor; #None};
+type ComplianceSeverity__595285184 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__614438244 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__668360952 = {#Critical; #Major; #Minor; #None};
+type ComplianceSeverity__681275527 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__805068392 = {#Critical; #Major; #Minor; #None};
 type ComplianceSeverity__948101368 = {#Critical; #Major; #Minor; #None};
+type ComplianceStatus__13815432 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__162260647 = {#Compliant; #NA; #NonCompliant};
+type ComplianceStatus__174529485 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__244517463 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__415919006 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__428414586 = {#Compliant; #NA; #NonCompliant};
@@ -303,8 +418,16 @@ type ComplianceStatus__465779599 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__521704013 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__601395773 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__637172098 = {#Compliant; #NA; #NonCompliant};
+type ComplianceStatus__661359434 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__932132851 = {#Compliant; #NA; #NonCompliant};
 type ComplianceStatus__999830706 = {#Compliant; #NA; #NonCompliant};
+type ControllerProfile__394718182 =
+  {
+    var email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text
+  };
 type ControllerProfile__448167338 =
   {var email : Text; var name : Text; var phone : Text};
 type ControllerProfile__605498721 =
@@ -313,6 +436,13 @@ type ControllerProfile__623363605 =
   {var email : Text; var name : Text; var phone : Text};
 type ControllerProfile__741240148 =
   {var email : Text; var name : Text; var phone : Text};
+type ControllerProfile__746852308 =
+  {
+    var email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text
+  };
 type CostCodeCompletionInternal__1052666802 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
 type CostCodeCompletionInternal__130197296 =
@@ -333,9 +463,15 @@ type CostCodeCompletionInternal__385257593 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
 type CostCodeCompletionInternal__427647456 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
+type CostCodeCompletionInternal__450534619 =
+  {codeId : Nat; var percentComplete : Float; phaseId : Nat};
+type CostCodeCompletionInternal__515112898 =
+  {codeId : Nat; var percentComplete : Float; phaseId : Nat};
 type CostCodeCompletionInternal__597597758 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
 type CostCodeCompletionInternal__617551045 =
+  {codeId : Nat; var percentComplete : Float; phaseId : Nat};
+type CostCodeCompletionInternal__69398345 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
 type CostCodeCompletionInternal__820630899 =
   {codeId : Nat; var percentComplete : Float; phaseId : Nat};
@@ -510,6 +646,42 @@ type CostCodeInternal__457725479 =
     phaseId : Nat;
     var projectNumber : Text
   };
+type CostCodeInternal__468848335 =
+  {
+    var area : Text;
+    var cost : Float;
+    var csiCode : Text;
+    var csiDivision : Text;
+    var distribution : Text;
+    id : Nat;
+    var operation : Text;
+    phaseId : Nat;
+    var projectNumber : Text
+  };
+type CostCodeInternal__472387633 =
+  {
+    var area : Text;
+    var cost : Float;
+    var csiCode : Text;
+    var csiDivision : Text;
+    var distribution : Text;
+    id : Nat;
+    var operation : Text;
+    phaseId : Nat;
+    var projectNumber : Text
+  };
+type CostCodeInternal__702416816 =
+  {
+    var area : Text;
+    var cost : Float;
+    var csiCode : Text;
+    var csiDivision : Text;
+    var distribution : Text;
+    id : Nat;
+    var operation : Text;
+    phaseId : Nat;
+    var projectNumber : Text
+  };
 type CostCodeInternal__812702480 =
   {
     var area : Text;
@@ -558,6 +730,20 @@ type CostCodeInternal__931985577 =
     phaseId : Nat;
     var projectNumber : Text
   };
+type CriticalChangePlan__258010469 =
+  {
+    var affectedStandardIds : [Text];
+    var controlMeasures : Text;
+    createdAt : Int;
+    createdBy : Text;
+    var csiCodes : [Text];
+    var hazardAnalysis : Text;
+    id : Text;
+    var name : Text;
+    var phaseIds : [Text];
+    var responsibleParticipantIds : [Text];
+    var status : CriticalPlanStatus__282236318
+  };
 type CriticalChangePlan__315412854 =
   {
     var affectedStandardIds : [Text];
@@ -585,6 +771,20 @@ type CriticalChangePlan__362585778 =
     var phaseIds : [Text];
     var responsibleParticipantIds : [Text];
     var status : CriticalPlanStatus__1018885453
+  };
+type CriticalChangePlan__401251769 =
+  {
+    var affectedStandardIds : [Text];
+    var controlMeasures : Text;
+    createdAt : Int;
+    createdBy : Text;
+    var csiCodes : [Text];
+    var hazardAnalysis : Text;
+    id : Text;
+    var name : Text;
+    var phaseIds : [Text];
+    var responsibleParticipantIds : [Text];
+    var status : CriticalPlanStatus__990522445
   };
 type CriticalChangePlan__460014130 =
   {
@@ -641,6 +841,20 @@ type CriticalChangePlan__67265290 =
     var phaseIds : [Text];
     var responsibleParticipantIds : [Text];
     var status : CriticalPlanStatus__353661766
+  };
+type CriticalChangePlan__747668656 =
+  {
+    var affectedStandardIds : [Text];
+    var controlMeasures : Text;
+    createdAt : Int;
+    createdBy : Text;
+    var csiCodes : [Text];
+    var hazardAnalysis : Text;
+    id : Text;
+    var name : Text;
+    var phaseIds : [Text];
+    var responsibleParticipantIds : [Text];
+    var status : CriticalPlanStatus__729449268
   };
 type CriticalChangePlan__779360940 =
   {
@@ -716,6 +930,15 @@ type CriticalPlanApproval__225778305 =
     planId : Text;
     role : Text
   };
+type CriticalPlanApproval__446545954 =
+  {
+    approved : Bool;
+    approvedAt : Int;
+    approvedBy : Text;
+    id : Text;
+    planId : Text;
+    role : Text
+  };
 type CriticalPlanApproval__470006129 =
   {
     approved : Bool;
@@ -726,6 +949,15 @@ type CriticalPlanApproval__470006129 =
     role : Text
   };
 type CriticalPlanApproval__497746901 =
+  {
+    approved : Bool;
+    approvedAt : Int;
+    approvedBy : Text;
+    id : Text;
+    planId : Text;
+    role : Text
+  };
+type CriticalPlanApproval__552247480 =
   {
     approved : Bool;
     approvedAt : Int;
@@ -770,6 +1002,15 @@ type CriticalPlanApproval__843078090 =
     planId : Text;
     role : Text
   };
+type CriticalPlanApproval__864889563 =
+  {
+    approved : Bool;
+    approvedAt : Int;
+    approvedBy : Text;
+    id : Text;
+    planId : Text;
+    role : Text
+  };
 type CriticalPlanApproval__909177177 =
   {
     approved : Bool;
@@ -792,6 +1033,8 @@ type CriticalPlanStatus__1018885453 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__23842239 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
+type CriticalPlanStatus__282236318 =
+  {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__296284301 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__336253096 =
@@ -802,15 +1045,37 @@ type CriticalPlanStatus__353661766 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__589956347 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
+type CriticalPlanStatus__729449268 =
+  {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__816767547 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__861407674 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
 type CriticalPlanStatus__951746457 =
   {#Approved; #Draft; #PendingApproval; #Rejected};
+type CriticalPlanStatus__990522445 =
+  {#Approved; #Draft; #PendingApproval; #Rejected};
 type Data__791452850<K, V> =
   {var count : Nat__490723111; kvs : [var ?(K, V)]};
 type DrawingCategory__1065317426 =
+  {
+    #ArchitectDrawings;
+    #Blueprints;
+    #CADFiles;
+    #ConstructionDrawings;
+    #EngineeringDrawings;
+    #Photographs
+  };
+type DrawingCategory__517797759 =
+  {
+    #ArchitectDrawings;
+    #Blueprints;
+    #CADFiles;
+    #ConstructionDrawings;
+    #EngineeringDrawings;
+    #Photographs
+  };
+type DrawingCategory__926650246 =
   {
     #ArchitectDrawings;
     #Blueprints;
@@ -830,7 +1095,27 @@ type DrawingCategory__950187552 =
   };
 type DrawingFileType__1052898947 = {#DWG; #DXF; #JPG; #PDF; #PNG};
 type DrawingFileType__851008469 = {#DWG; #DXF; #JPG; #PDF; #PNG};
+type DrawingFileType__956148416 = {#DWG; #DXF; #JPG; #PDF; #PNG};
+type DrawingFileType__997293975 = {#DWG; #DXF; #JPG; #PDF; #PNG};
 type DrawingNotification__125025673 =
+  {
+    dismissed : Bool;
+    drawingId : Text;
+    drawingName : Text;
+    id : Text;
+    requestedAt : Int;
+    requestedBy : Text
+  };
+type DrawingNotification__255874399 =
+  {
+    dismissed : Bool;
+    drawingId : Text;
+    drawingName : Text;
+    id : Text;
+    requestedAt : Int;
+    requestedBy : Text
+  };
+type DrawingNotification__661402780 =
   {
     dismissed : Bool;
     drawingId : Text;
@@ -870,6 +1155,39 @@ type Drawing__160249960 =
     uploadedAt : Int;
     uploadedBy : Text
   };
+type Drawing__606507139 =
+  {
+    category : DrawingCategory__926650246;
+    description : Text;
+    fileType : DrawingFileType__956148416;
+    id : Text;
+    name : Text;
+    storageKey : Text;
+    uploadedAt : Int;
+    uploadedBy : Text
+  };
+type Drawing__979365371 =
+  {
+    category : DrawingCategory__517797759;
+    description : Text;
+    fileType : DrawingFileType__997293975;
+    id : Text;
+    name : Text;
+    storageKey : Text;
+    uploadedAt : Int;
+    uploadedBy : Text
+  };
+type FeatureLockState__1034425104 =
+  {
+    var compliance : Bool;
+    var cost : Bool;
+    var documents : Bool;
+    var oacMeetings : Bool;
+    var participants : Bool;
+    var resources : Bool;
+    var scheduling : Bool;
+    var subscriptions : Bool
+  };
 type FeatureLockState__241082987 =
   {
     var compliance : Bool;
@@ -882,6 +1200,17 @@ type FeatureLockState__241082987 =
     var subscriptions : Bool
   };
 type FeatureLockState__364595946 =
+  {
+    var compliance : Bool;
+    var cost : Bool;
+    var documents : Bool;
+    var oacMeetings : Bool;
+    var participants : Bool;
+    var resources : Bool;
+    var scheduling : Bool;
+    var subscriptions : Bool
+  };
+type FeatureLockState__421112347 =
   {
     var compliance : Bool;
     var cost : Bool;
@@ -905,18 +1234,25 @@ type FeatureLockState__629446129 =
   };
 type FormType__47388091 = {#Addendum; #G701; #G702; #G703; #MeetingMinutes};
 type IdleTimeMode__199760597 = {#holdThroughProject; #releaseAtPhaseEnd};
+type IdleTimeMode__224964398 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__329977533 = {#holdThroughProject; #releaseAtPhaseEnd};
+type IdleTimeMode__382200578 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__388170420 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__50162472 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__621255555 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__749242463 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__811950822 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__823663301 = {#holdThroughProject; #releaseAtPhaseEnd};
+type IdleTimeMode__863236654 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__890240649 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__971746861 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeMode__986788227 = {#holdThroughProject; #releaseAtPhaseEnd};
 type IdleTimeSettingInternal__1069842089 =
   {var defaultIdleMode : IdleTimeMode__971746861; projectId : Text};
+type IdleTimeSettingInternal__136402672 =
+  {var defaultIdleMode : IdleTimeMode__224964398; projectId : Text};
+type IdleTimeSettingInternal__195020155 =
+  {var defaultIdleMode : IdleTimeMode__382200578; projectId : Text};
 type IdleTimeSettingInternal__442987941 =
   {var defaultIdleMode : IdleTimeMode__329977533; projectId : Text};
 type IdleTimeSettingInternal__501623779 =
@@ -938,6 +1274,8 @@ type IdleTimeSettingInternal__826321226 =
   {var defaultIdleMode : IdleTimeMode__50162472; projectId : Text};
 type IdleTimeSettingInternal__879808597 =
   {var defaultIdleMode : IdleTimeMode__986788227; projectId : Text};
+type IdleTimeSettingInternal__945211573 =
+  {var defaultIdleMode : IdleTimeMode__863236654; projectId : Text};
 type Internal__8484328<K, V> =
   {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
 type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
@@ -953,15 +1291,31 @@ type Map__297112838<K, V> =
   {var root : Node__46230540<K, V>; var size : Nat__490723111};
 type Map__605269027<K, V> = Map__158565046<K, V>;
 type NCCERCertStatus__1001644894 = {#Current; #Expired; #Expiring};
+type NCCERCertStatus__1021363218 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__1040127883 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__204858859 = {#Current; #Expired; #Expiring};
+type NCCERCertStatus__278855043 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__344961621 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__402604132 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__430060508 = {#Current; #Expired; #Expiring};
+type NCCERCertStatus__434499980 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__504212023 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__547441748 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__610778744 = {#Current; #Expired; #Expiring};
 type NCCERCertStatus__799325224 = {#Current; #Expired; #Expiring};
+type NCCERCertification__1034558303 =
+  {
+    certNumber : Text;
+    discipline : Text;
+    expiresAt : Int;
+    id : Text;
+    issuedAt : Int;
+    level : Text;
+    participantId : Text;
+    state : Text;
+    var status : NCCERCertStatus__278855043;
+    trade : Text
+  };
 type NCCERCertification__150057250 =
   {
     certNumber : Text;
@@ -1014,6 +1368,19 @@ type NCCERCertification__233532425 =
     var status : NCCERCertStatus__547441748;
     trade : Text
   };
+type NCCERCertification__250032791 =
+  {
+    certNumber : Text;
+    discipline : Text;
+    expiresAt : Int;
+    id : Text;
+    issuedAt : Int;
+    level : Text;
+    participantId : Text;
+    state : Text;
+    var status : NCCERCertStatus__1021363218;
+    trade : Text
+  };
 type NCCERCertification__354438939 =
   {
     certNumber : Text;
@@ -1025,6 +1392,19 @@ type NCCERCertification__354438939 =
     participantId : Text;
     state : Text;
     var status : NCCERCertStatus__1040127883;
+    trade : Text
+  };
+type NCCERCertification__370608863 =
+  {
+    certNumber : Text;
+    discipline : Text;
+    expiresAt : Int;
+    id : Text;
+    issuedAt : Int;
+    level : Text;
+    participantId : Text;
+    state : Text;
+    var status : NCCERCertStatus__434499980;
     trade : Text
   };
 type NCCERCertification__371288244 =
@@ -1121,6 +1501,107 @@ type NewActor__1009386238 =
     signOffStore : Map__605269027<Text, PhaseSignOff__149582618>;
     standardsStore : Map__605269027<Text, SafetyStandard__282349726>;
     state : {var nextPhaseId : Nat}
+  };
+type NewActor__1021225815 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__230737838>;
+    allocationStore : Map__605269027<Text, PhaseAllocationInternal__91757561>;
+    assignments : Map__605269027<Text, ParticipantAssignment__918578033>;
+    certStore : Map__605269027<Text, NCCERCertification__1034558303>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__472387633>;
+    completions : List__415060402<CostCodeCompletionInternal__69398345>;
+    complianceStore : Map__605269027<Text, ComplianceItem__108691193>;
+    controllerProfile : ControllerProfile__394718182;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__813936270>>;
+    forms : Map__605269027<Text, AIAFormEntry__134392114>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__945211573>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__416206740>;
+    oacState : {var zoomSettings : ?ZoomSettings__1073379469};
+    participants : Map__605269027<Text, Participant__16298556>;
+    phases : List__415060402<PhaseInternal__443155929>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__446545954>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__401251769>;
+    reminderState : Map__605269027<Principal, ReminderState__403070176>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__644010325>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__19481095>;
+    resourceStore : Map__605269027<Text, ResourceInternal__993127574>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__618245451, Scenario__292939474>;
+    sessions : Map__605269027<Text, OACMeetingSession__710449281>;
+    settingsState : SettingsState__269028298;
+    shareLinks : Map__605269027<Text, ShareLink__164446276>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__405580501>;
+    standardsStore : Map__605269027<Text, SafetyStandard__497955817>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, UserSubscription__946635590>;
+    users : Map__605269027<Text, UserRecord__781109363>
+  };
+type NewActor__1063031164 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__874345866>;
+    allocationStore :
+      Map__605269027<Text, PhaseAllocationInternal__455929711>;
+    assignments : Map__605269027<Text, ParticipantAssignment__162682252>;
+    bankAccountStore : {var bankAccount : ?BankAccount__308491217};
+    cancellationRequests :
+      Map__605269027<Text, CancellationRequest__803992498>;
+    certStore : Map__605269027<Text, NCCERCertification__250032791>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__702416816>;
+    completions : List__415060402<CostCodeCompletionInternal__450534619>;
+    complianceStore : Map__605269027<Text, ComplianceItem__1028734847>;
+    controllerProfile : ControllerProfile__746852308;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__10817443>>;
+    drawingNotifications :
+      Map__605269027<Text, DrawingNotification__661402780>;
+    drawingsStore : Map__605269027<Text, Drawing__979365371>;
+    featureLocks : FeatureLockState__1034425104;
+    forms : Map__605269027<Text, AIAFormEntry__641373310>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__195020155>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__284535459>;
+    loginEmails : List__415060402<Text>;
+    loginSessions :
+      Map__605269027<Principal, List__415060402<SessionEntry__926528225>>;
+    oacState : {var zoomSettings : ?ZoomSettings__692095270};
+    participants : Map__605269027<Text, Participant__865864327>;
+    payoutStore :
+      {
+        var nextPayoutDate : ?Text;
+        var payoutRecords : List__415060402<PayoutRecord__977964338>
+      };
+    phases : List__415060402<PhaseInternal__697448999>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__552247480>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__258010469>;
+    reminderState : Map__605269027<Principal, ReminderState__1022116465>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__220992455>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__880785027>;
+    resourceStore : Map__605269027<Text, ResourceInternal__330204983>;
+    reviewRequestsStore : Map__605269027<Text, ReviewRequest__172992402>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__845758144, Scenario__860562827>;
+    sessions : Map__605269027<Text, OACMeetingSession__995574771>;
+    settingsState : SettingsState__908970413;
+    shareLinks : Map__605269027<Text, ShareLink__549310428>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__472522496>;
+    standardsStore : Map__605269027<Text, SafetyStandard__290930655>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, NewUserSubscription__255448977>;
+    users : Map__605269027<Text, UserRecord__138210116>
   };
 type NewActor__111759787 =
   {
@@ -1472,6 +1953,63 @@ type NewActor__863411395 =
     stripeConfig : {var secretKey : ?Text};
     subscriptions : Map__605269027<Principal, UserSubscription__324900425>
   };
+type NewActor__906326317 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__871711360>;
+    allocationStore :
+      Map__605269027<Text, PhaseAllocationInternal__148031970>;
+    assignments : Map__605269027<Text, ParticipantAssignment__159984857>;
+    bankAccountStore : {var bankAccount : ?BankAccount__742872797};
+    certStore : Map__605269027<Text, NCCERCertification__370608863>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__468848335>;
+    completions : List__415060402<CostCodeCompletionInternal__515112898>;
+    complianceStore : Map__605269027<Text, ComplianceItem__990161850>;
+    controllerProfile : NewControllerProfile__88241459;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__572430573>>;
+    drawingNotifications :
+      Map__605269027<Text, DrawingNotification__255874399>;
+    drawingsStore : Map__605269027<Text, Drawing__606507139>;
+    featureLocks : FeatureLockState__421112347;
+    forms : Map__605269027<Text, AIAFormEntry__104932410>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__136402672>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__801204917>;
+    loginEmails : List__415060402<Text>;
+    loginSessions :
+      Map__605269027<Principal, List__415060402<SessionEntry__614349036>>;
+    oacState : {var zoomSettings : ?ZoomSettings__1019551735};
+    participants : Map__605269027<Text, Participant__919435594>;
+    payoutStore :
+      {
+        var nextPayoutDate : ?Text;
+        var payoutRecords : List__415060402<PayoutRecord__728750588>
+      };
+    phases : List__415060402<PhaseInternal__558295179>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__864889563>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__747668656>;
+    reminderState : Map__605269027<Principal, ReminderState__314607335>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__584533314>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__864436704>;
+    resourceStore : Map__605269027<Text, ResourceInternal__350350384>;
+    reviewRequestsStore : Map__605269027<Text, ReviewRequest__847331347>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__89986592, Scenario__50523674>;
+    sessions : Map__605269027<Text, OACMeetingSession__986339879>;
+    settingsState : SettingsState__748703843;
+    shareLinks : Map__605269027<Text, ShareLink__843412475>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__507799388>;
+    standardsStore : Map__605269027<Text, SafetyStandard__364802686>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, UserSubscription__244670959>;
+    users : Map__605269027<Text, UserRecord__445227454>
+  };
 type NewActor__915055824 =
   {
     _controller : Principal;
@@ -1557,6 +2095,13 @@ type NewActor__915504286 =
     state : {var nextPhaseId : Nat};
     subscriptions : Map__605269027<Principal, UserSubscription__965332587>
   };
+type NewControllerProfile__88241459 =
+  {
+    var email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text
+  };
 type NewPhaseInternal__609660722 =
   {
     var crashFactor : Float;
@@ -1576,6 +2121,25 @@ type NewSettingsState__355377595 =
     var activeSubtopicId : ?Text;
     var projectManagerId : ?Text;
     var rsMeansSettings : RSMeansSettings__482840150
+  };
+type NewSubscriptionStatus__736547830 =
+  {#active; #cancelled; #expired; #frozen; #trial};
+type NewUserSubscription__255448977 =
+  {
+    cancelledAt : ?Int;
+    chargeScheduledAt : Int;
+    currentPlan : SubscriptionTier__952062647;
+    frozenAt : ?Int;
+    frozenReason : ?Text;
+    status : NewSubscriptionStatus__736547830;
+    stripeCustomerId : ?Text;
+    stripePaymentMethodId : ?Text;
+    stripeSubscriptionId : ?Text;
+    subscriptionExpiresAt : ?Int;
+    subscriptionStartAt : ?Int;
+    tier : SubscriptionTier__952062647;
+    trialStartAt : Int;
+    userId : Principal
   };
 type Node__46230540<K, V> =
   {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
@@ -1689,6 +2253,17 @@ type OACMeetingSession__661701458 =
     zoomLink : ?Text;
     zoomMeetingId : ?Text
   };
+type OACMeetingSession__710449281 =
+  {
+    createdAt : Int;
+    id : Text;
+    linkedCategoryId : ?Text;
+    projectId : Text;
+    sessionDate : Text;
+    sessionTime : Text;
+    zoomLink : ?Text;
+    zoomMeetingId : ?Text
+  };
 type OACMeetingSession__886261755 =
   {
     createdAt : Int;
@@ -1701,6 +2276,28 @@ type OACMeetingSession__886261755 =
     zoomMeetingId : ?Text
   };
 type OACMeetingSession__963223548 =
+  {
+    createdAt : Int;
+    id : Text;
+    linkedCategoryId : ?Text;
+    projectId : Text;
+    sessionDate : Text;
+    sessionTime : Text;
+    zoomLink : ?Text;
+    zoomMeetingId : ?Text
+  };
+type OACMeetingSession__986339879 =
+  {
+    createdAt : Int;
+    id : Text;
+    linkedCategoryId : ?Text;
+    projectId : Text;
+    sessionDate : Text;
+    sessionTime : Text;
+    zoomLink : ?Text;
+    zoomMeetingId : ?Text
+  };
+type OACMeetingSession__995574771 =
   {
     createdAt : Int;
     id : Text;
@@ -1866,6 +2463,62 @@ type OldActor__265473947 =
     state : {var nextPhaseId : Nat};
     stripeConfig : {var secretKey : ?Text};
     subscriptions : Map__605269027<Principal, UserSubscription__324900425>
+  };
+type OldActor__276232375 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__871711360>;
+    allocationStore :
+      Map__605269027<Text, PhaseAllocationInternal__148031970>;
+    assignments : Map__605269027<Text, ParticipantAssignment__159984857>;
+    bankAccountStore : {var bankAccount : ?BankAccount__742872797};
+    certStore : Map__605269027<Text, NCCERCertification__370608863>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__468848335>;
+    completions : List__415060402<CostCodeCompletionInternal__515112898>;
+    complianceStore : Map__605269027<Text, ComplianceItem__990161850>;
+    controllerProfile : OldControllerProfile__537592327;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__572430573>>;
+    drawingNotifications :
+      Map__605269027<Text, DrawingNotification__255874399>;
+    drawingsStore : Map__605269027<Text, Drawing__606507139>;
+    featureLocks : FeatureLockState__421112347;
+    forms : Map__605269027<Text, AIAFormEntry__104932410>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__136402672>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__801204917>;
+    loginSessions :
+      Map__605269027<Principal, List__415060402<SessionEntry__614349036>>;
+    oacState : {var zoomSettings : ?ZoomSettings__1019551735};
+    participants : Map__605269027<Text, Participant__919435594>;
+    payoutStore :
+      {
+        var nextPayoutDate : ?Text;
+        var payoutRecords : List__415060402<PayoutRecord__728750588>
+      };
+    phases : List__415060402<PhaseInternal__558295179>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__864889563>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__747668656>;
+    reminderState : Map__605269027<Principal, ReminderState__314607335>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__584533314>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__864436704>;
+    resourceStore : Map__605269027<Text, ResourceInternal__350350384>;
+    reviewRequestsStore : Map__605269027<Text, ReviewRequest__847331347>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__89986592, Scenario__50523674>;
+    sessions : Map__605269027<Text, OACMeetingSession__986339879>;
+    settingsState : SettingsState__748703843;
+    shareLinks : Map__605269027<Text, ShareLink__843412475>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__507799388>;
+    standardsStore : Map__605269027<Text, SafetyStandard__364802686>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, UserSubscription__244670959>;
+    users : Map__605269027<Text, UserRecord__445227454>
   };
 type OldActor__317841133 =
   {
@@ -2108,6 +2761,105 @@ type OldActor__826395342 =
     stripeConfig : {var secretKey : ?Text};
     subscriptions : Map__605269027<Principal, UserSubscription__552279357>
   };
+type OldActor__827239671 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__230737838>;
+    allocationStore : Map__605269027<Text, PhaseAllocationInternal__91757561>;
+    assignments : Map__605269027<Text, ParticipantAssignment__918578033>;
+    certStore : Map__605269027<Text, NCCERCertification__1034558303>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__472387633>;
+    completions : List__415060402<CostCodeCompletionInternal__69398345>;
+    complianceStore : Map__605269027<Text, ComplianceItem__108691193>;
+    controllerProfile : OldControllerProfile__760995704;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__813936270>>;
+    forms : Map__605269027<Text, AIAFormEntry__134392114>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__945211573>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__416206740>;
+    oacState : {var zoomSettings : ?ZoomSettings__1073379469};
+    participants : Map__605269027<Text, Participant__16298556>;
+    phases : List__415060402<PhaseInternal__443155929>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__446545954>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__401251769>;
+    reminderState : Map__605269027<Principal, ReminderState__403070176>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__644010325>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__19481095>;
+    resourceStore : Map__605269027<Text, ResourceInternal__993127574>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__618245451, Scenario__292939474>;
+    sessions : Map__605269027<Text, OACMeetingSession__710449281>;
+    settingsState : SettingsState__269028298;
+    shareLinks : Map__605269027<Text, ShareLink__164446276>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__405580501>;
+    standardsStore : Map__605269027<Text, SafetyStandard__497955817>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, OldUserSubscription__666887118>;
+    users : Map__605269027<Text, UserRecord__781109363>
+  };
+type OldActor__836269021 =
+  {
+    _controller : Principal;
+    adminRoles : Map__605269027<Principal, AdminRole__874345866>;
+    allocationStore :
+      Map__605269027<Text, PhaseAllocationInternal__455929711>;
+    assignments : Map__605269027<Text, ParticipantAssignment__162682252>;
+    bankAccountStore : {var bankAccount : ?BankAccount__308491217};
+    certStore : Map__605269027<Text, NCCERCertification__250032791>;
+    codeState : {var nextCostCodeId : Nat};
+    codes : List__415060402<CostCodeInternal__702416816>;
+    completions : List__415060402<CostCodeCompletionInternal__450534619>;
+    complianceStore : Map__605269027<Text, ComplianceItem__1028734847>;
+    controllerProfile : ControllerProfile__746852308;
+    documentStore :
+      Map__605269027<Principal,
+                      List__415060402<VerificationDocument__10817443>>;
+    drawingNotifications :
+      Map__605269027<Text, DrawingNotification__661402780>;
+    drawingsStore : Map__605269027<Text, Drawing__979365371>;
+    featureLocks : FeatureLockState__1034425104;
+    forms : Map__605269027<Text, AIAFormEntry__641373310>;
+    idleTimeStore : Map__605269027<Text, IdleTimeSettingInternal__195020155>;
+    linksStore : Map__605269027<Text, PhaseStandardLink__284535459>;
+    loginEmails : List__415060402<Text>;
+    loginSessions :
+      Map__605269027<Principal, List__415060402<SessionEntry__926528225>>;
+    oacState : {var zoomSettings : ?ZoomSettings__692095270};
+    participants : Map__605269027<Text, Participant__865864327>;
+    payoutStore :
+      {
+        var nextPayoutDate : ?Text;
+        var payoutRecords : List__415060402<PayoutRecord__977964338>
+      };
+    phases : List__415060402<PhaseInternal__697448999>;
+    planApprovalsStore :
+      Map__605269027<Text, CriticalPlanApproval__552247480>;
+    plansStore : Map__605269027<Text, CriticalChangePlan__258010469>;
+    reminderState : Map__605269027<Principal, ReminderState__1022116465>;
+    renewalHistory :
+      Map__605269027<Principal,
+                      List__415060402<RenewalHistoryEntry__220992455>>;
+    resetCodes : Map__605269027<Text, ResetCodeEntry__880785027>;
+    resourceStore : Map__605269027<Text, ResourceInternal__330204983>;
+    reviewRequestsStore : Map__605269027<Text, ReviewRequest__172992402>;
+    safetyState : {var nextSafetyId : Nat};
+    scenariosMap : Map__605269027<ScenarioId__845758144, Scenario__860562827>;
+    sessions : Map__605269027<Text, OACMeetingSession__995574771>;
+    settingsState : SettingsState__908970413;
+    shareLinks : Map__605269027<Text, ShareLink__549310428>;
+    signOffStore : Map__605269027<Text, PhaseSignOff__472522496>;
+    standardsStore : Map__605269027<Text, SafetyStandard__290930655>;
+    state : {var nextPhaseId : Nat};
+    stripeConfig : {var secretKey : ?Text};
+    subscriptions : Map__605269027<Principal, OldUserSubscription__88644260>;
+    users : Map__605269027<Text, UserRecord__138210116>
+  };
 type OldActor__972415429 =
   {
     assignments : Map__605269027<Text, ParticipantAssignment__427329331>;
@@ -2118,6 +2870,15 @@ type OldActor__972415429 =
     phases : List__415060402<PhaseInternal__688434318>;
     settingsState : SettingsState__570406426;
     state : {var nextPhaseId : Nat}
+  };
+type OldControllerProfile__537592327 =
+  {var email : Text; var name : Text; var phone : Text};
+type OldControllerProfile__760995704 =
+  {
+    var email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text
   };
 type OldParticipantRole__904346331 =
   {
@@ -2164,6 +2925,41 @@ type OldSettingsState__703143772 =
     var projectManagerId : ?Text;
     var rsMeansSettings : RSMeansSettings__482840150
   };
+type OldSubscriptionStatus__4016730 = {#active; #cancelled; #expired; #trial};
+type OldSubscriptionStatus__734994363 =
+  {#active; #cancelled; #expired; #frozen; #trial};
+type OldUserSubscription__666887118 =
+  {
+    cancelledAt : ?Int;
+    chargeScheduledAt : Int;
+    currentPlan : SubscriptionTier__901508408;
+    frozenAt : ?Int;
+    frozenReason : ?Text;
+    status : OldSubscriptionStatus__734994363;
+    stripeCustomerId : ?Text;
+    stripePaymentMethodId : ?Text;
+    stripeSubscriptionId : ?Text;
+    subscriptionExpiresAt : ?Int;
+    subscriptionStartAt : ?Int;
+    tier : SubscriptionTier__901508408;
+    trialStartAt : Int;
+    userId : Principal
+  };
+type OldUserSubscription__88644260 =
+  {
+    cancelledAt : ?Int;
+    chargeScheduledAt : Int;
+    currentPlan : {#tier10year; #tier1year; #tier5year};
+    status : OldSubscriptionStatus__4016730;
+    stripeCustomerId : ?Text;
+    stripePaymentMethodId : ?Text;
+    stripeSubscriptionId : ?Text;
+    subscriptionExpiresAt : ?Int;
+    subscriptionStartAt : ?Int;
+    tier : {#tier10year; #tier1year; #tier5year};
+    trialStartAt : Int;
+    userId : Principal
+  };
 type ParticipantAssignment__1001987219 =
   {
     actualCost : ?Float;
@@ -2175,6 +2971,34 @@ type ParticipantAssignment__1001987219 =
     rsMeansLaborRate : ?Float;
     rsMeansMaterialRate : ?Float;
     rsMeansSource : RSMeansSource__384198061;
+    rsMeansUnitCost : ?Float;
+    variance : ?Float
+  };
+type ParticipantAssignment__159984857 =
+  {
+    actualCost : ?Float;
+    costCodeId : Text;
+    participantId : Text;
+    phaseId : Text;
+    rsMeansCrewRate : ?Float;
+    rsMeansEquipmentRate : ?Float;
+    rsMeansLaborRate : ?Float;
+    rsMeansMaterialRate : ?Float;
+    rsMeansSource : RSMeansSource__672711682;
+    rsMeansUnitCost : ?Float;
+    variance : ?Float
+  };
+type ParticipantAssignment__162682252 =
+  {
+    actualCost : ?Float;
+    costCodeId : Text;
+    participantId : Text;
+    phaseId : Text;
+    rsMeansCrewRate : ?Float;
+    rsMeansEquipmentRate : ?Float;
+    rsMeansLaborRate : ?Float;
+    rsMeansMaterialRate : ?Float;
+    rsMeansSource : RSMeansSource__440592268;
     rsMeansUnitCost : ?Float;
     variance : ?Float
   };
@@ -2346,6 +3170,20 @@ type ParticipantAssignment__904333276 =
     rsMeansUnitCost : ?Float;
     variance : ?Float
   };
+type ParticipantAssignment__918578033 =
+  {
+    actualCost : ?Float;
+    costCodeId : Text;
+    participantId : Text;
+    phaseId : Text;
+    rsMeansCrewRate : ?Float;
+    rsMeansEquipmentRate : ?Float;
+    rsMeansLaborRate : ?Float;
+    rsMeansMaterialRate : ?Float;
+    rsMeansSource : RSMeansSource__889955156;
+    rsMeansUnitCost : ?Float;
+    variance : ?Float
+  };
 type ParticipantAssignment__928388078 =
   {
     actualCost : ?Float;
@@ -2389,6 +3227,20 @@ type ParticipantOverride__1047516469 =
     phaseAssignments : [Text]
   };
 type ParticipantOverride__156826470 =
+  {
+    costCodeAssignments : [Text];
+    newRole : ?Text;
+    participantId : Text;
+    phaseAssignments : [Text]
+  };
+type ParticipantOverride__199027380 =
+  {
+    costCodeAssignments : [Text];
+    newRole : ?Text;
+    participantId : Text;
+    phaseAssignments : [Text]
+  };
+type ParticipantOverride__242083892 =
   {
     costCodeAssignments : [Text];
     newRole : ?Text;
@@ -2445,6 +3297,13 @@ type ParticipantOverride__735113922 =
     phaseAssignments : [Text]
   };
 type ParticipantOverride__75007852 =
+  {
+    costCodeAssignments : [Text];
+    newRole : ?Text;
+    participantId : Text;
+    phaseAssignments : [Text]
+  };
+type ParticipantOverride__846333704 =
   {
     costCodeAssignments : [Text];
     newRole : ?Text;
@@ -2522,6 +3381,20 @@ type ParticipantRole__295457325 =
     #SafetyInspector;
     #SpecialtyEngineer
   };
+type ParticipantRole__296733237 =
+  {
+    #Architect;
+    #CivilEngineer;
+    #ConstructionManager;
+    #Contractor;
+    #Designer;
+    #EHSRepresentative;
+    #MechanicalEngineer;
+    #Owner;
+    #SafetyEngineer;
+    #SafetyInspector;
+    #SpecialtyEngineer
+  };
 type ParticipantRole__31839884 =
   {
     #Architect;
@@ -2533,6 +3406,20 @@ type ParticipantRole__31839884 =
     #Owner;
     #SpecialtyEngineer
   };
+type ParticipantRole__371067107 =
+  {
+    #Architect;
+    #CivilEngineer;
+    #ConstructionManager;
+    #Contractor;
+    #Designer;
+    #EHSRepresentative;
+    #MechanicalEngineer;
+    #Owner;
+    #SafetyEngineer;
+    #SafetyInspector;
+    #SpecialtyEngineer
+  };
 type ParticipantRole__523749704 =
   {
     #Architect;
@@ -2542,6 +3429,20 @@ type ParticipantRole__523749704 =
     #Designer;
     #MechanicalEngineer;
     #Owner;
+    #SpecialtyEngineer
+  };
+type ParticipantRole__570547730 =
+  {
+    #Architect;
+    #CivilEngineer;
+    #ConstructionManager;
+    #Contractor;
+    #Designer;
+    #EHSRepresentative;
+    #MechanicalEngineer;
+    #Owner;
+    #SafetyEngineer;
+    #SafetyInspector;
     #SpecialtyEngineer
   };
 type ParticipantRole__640195920 =
@@ -2670,10 +3571,13 @@ type ParticipantRole__996862810 =
 type ParticipantStatus__1017578310 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__1071996663 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__148768923 = {#Approved; #Pending; #Rejected};
+type ParticipantStatus__278285020 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__304885199 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__45531421 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__485335996 = {#Approved; #Pending; #Rejected};
+type ParticipantStatus__543639847 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__589406801 = {#Approved; #Pending; #Rejected};
+type ParticipantStatus__644772277 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__654738991 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__68135128 = {#Approved; #Pending; #Rejected};
 type ParticipantStatus__690858127 = {#Approved; #Pending; #Rejected};
@@ -2735,6 +3639,24 @@ type Participant__131971388 =
     residentialAddress : Text;
     role : ParticipantRole__102164328;
     status : ParticipantStatus__715584221
+  };
+type Participant__16298556 =
+  {
+    companyAddress : Text;
+    companyName : Text;
+    companyTrade : Text;
+    createdAt : Int;
+    email : Text;
+    fullName : Text;
+    id : Text;
+    mobilePhone : Text;
+    notes : Text;
+    officePhone : Text;
+    passcode : ?Text;
+    passcodeEmailSent : Bool;
+    residentialAddress : Text;
+    role : ParticipantRole__371067107;
+    status : ParticipantStatus__644772277
   };
 type Participant__170485431 =
   {
@@ -2880,6 +3802,24 @@ type Participant__816785777 =
     role : ParticipantRole__996862810;
     status : ParticipantStatus__45531421
   };
+type Participant__865864327 =
+  {
+    companyAddress : Text;
+    companyName : Text;
+    companyTrade : Text;
+    createdAt : Int;
+    email : Text;
+    fullName : Text;
+    id : Text;
+    mobilePhone : Text;
+    notes : Text;
+    officePhone : Text;
+    passcode : ?Text;
+    passcodeEmailSent : Bool;
+    residentialAddress : Text;
+    role : ParticipantRole__570547730;
+    status : ParticipantStatus__543639847
+  };
 type Participant__876506706 =
   {
     companyAddress : Text;
@@ -2897,6 +3837,24 @@ type Participant__876506706 =
     residentialAddress : Text;
     role : ParticipantRole__870676211;
     status : ParticipantStatus__690858127
+  };
+type Participant__919435594 =
+  {
+    companyAddress : Text;
+    companyName : Text;
+    companyTrade : Text;
+    createdAt : Int;
+    email : Text;
+    fullName : Text;
+    id : Text;
+    mobilePhone : Text;
+    notes : Text;
+    officePhone : Text;
+    passcode : ?Text;
+    passcodeEmailSent : Bool;
+    residentialAddress : Text;
+    role : ParticipantRole__296733237;
+    status : ParticipantStatus__278285020
   };
 type Participant__959523833 =
   {
@@ -2955,6 +3913,19 @@ type Participant__997444411 =
 type PayoutRecord__1035416734 = {amount : Float; date : Text; status : Text};
 type PayoutRecord__608487138 = {amount : Float; date : Text; status : Text};
 type PayoutRecord__641788428 = {amount : Float; date : Text; status : Text};
+type PayoutRecord__728750588 = {amount : Float; date : Text; status : Text};
+type PayoutRecord__977964338 = {amount : Float; date : Text; status : Text};
+type PhaseAllocationInternal__148031970 =
+  {
+    var actualHours : ?Float;
+    var allocatedHours : Float;
+    var availableHours : Float;
+    id : Text;
+    var laborCostSource : Text;
+    var manualLaborCost : ?Float;
+    phaseId : Text;
+    resourceId : Text
+  };
 type PhaseAllocationInternal__221703570 = PhaseAllocationInternal__430642065;
 type PhaseAllocationInternal__346096529 =
   {
@@ -3001,6 +3972,17 @@ type PhaseAllocationInternal__384889362 =
     resourceId : Text
   };
 type PhaseAllocationInternal__430642065 =
+  {
+    var actualHours : ?Float;
+    var allocatedHours : Float;
+    var availableHours : Float;
+    id : Text;
+    var laborCostSource : Text;
+    var manualLaborCost : ?Float;
+    phaseId : Text;
+    resourceId : Text
+  };
+type PhaseAllocationInternal__455929711 =
   {
     var actualHours : ?Float;
     var allocatedHours : Float;
@@ -3077,6 +4059,17 @@ type PhaseAllocationInternal__876099171 =
     phaseId : Text;
     resourceId : Text
   };
+type PhaseAllocationInternal__91757561 =
+  {
+    var actualHours : ?Float;
+    var allocatedHours : Float;
+    var availableHours : Float;
+    id : Text;
+    var laborCostSource : Text;
+    var manualLaborCost : ?Float;
+    phaseId : Text;
+    resourceId : Text
+  };
 type PhaseId__1018577634 = Nat;
 type PhaseId__1054709777 = Nat;
 type PhaseId__1058043605 = Nat;
@@ -3084,11 +4077,14 @@ type PhaseId__118512640 = Nat;
 type PhaseId__177372253 = Nat;
 type PhaseId__179639867 = Nat;
 type PhaseId__234143451 = Nat;
+type PhaseId__35356039 = Nat;
 type PhaseId__403931725 = Nat;
 type PhaseId__435135813 = Nat;
 type PhaseId__478216380 = Nat;
 type PhaseId__485685071 = Nat;
+type PhaseId__486121080 = Nat;
 type PhaseId__60911187 = Nat;
+type PhaseId__681391571 = Nat;
 type PhaseId__736844334 = Nat;
 type PhaseId__765222444 = Nat;
 type PhaseId__798098773 = Nat;
@@ -3178,6 +4174,18 @@ type PhaseInternal__3669506 =
     var scheduleOfValues : Float;
     var startOffset : TimeOffset__804033830
   };
+type PhaseInternal__443155929 =
+  {
+    var crashFactor : Float;
+    var endOffset : TimeOffset__1048655464;
+    id : PhaseId__681391571;
+    var name : Text;
+    var phaseOrder : Nat;
+    var requiredCash : Float;
+    var resourceMultiplier : Float;
+    var scheduleOfValues : Float;
+    var startOffset : TimeOffset__1048655464
+  };
 type PhaseInternal__46316041 =
   {
     var crashFactor : Float;
@@ -3201,6 +4209,18 @@ type PhaseInternal__516605049 =
     var resourceMultiplier : Float;
     var scheduleOfValues : Float;
     var startOffset : TimeOffset__102813615
+  };
+type PhaseInternal__558295179 =
+  {
+    var crashFactor : Float;
+    var endOffset : TimeOffset__171781351;
+    id : PhaseId__35356039;
+    var name : Text;
+    var phaseOrder : Nat;
+    var requiredCash : Float;
+    var resourceMultiplier : Float;
+    var scheduleOfValues : Float;
+    var startOffset : TimeOffset__171781351
   };
 type PhaseInternal__639691921 =
   {
@@ -3249,6 +4269,18 @@ type PhaseInternal__690838528 =
     var resourceMultiplier : Float;
     var scheduleOfValues : Float;
     var startOffset : TimeOffset__201649352
+  };
+type PhaseInternal__697448999 =
+  {
+    var crashFactor : Float;
+    var endOffset : TimeOffset__923253222;
+    id : PhaseId__486121080;
+    var name : Text;
+    var phaseOrder : Nat;
+    var requiredCash : Float;
+    var resourceMultiplier : Float;
+    var scheduleOfValues : Float;
+    var startOffset : TimeOffset__923253222
   };
 type PhaseInternal__812455360 =
   {
@@ -3359,6 +4391,13 @@ type PhaseOverride__445032396 =
     phaseId : Text;
     resourceMultiplier : Float
   };
+type PhaseOverride__445362827 =
+  {
+    crashFactor : Float;
+    laborCostOverride : ?Float;
+    phaseId : Text;
+    resourceMultiplier : Float
+  };
 type PhaseOverride__478312284 =
   {
     crashFactor : Float;
@@ -3387,7 +4426,21 @@ type PhaseOverride__613405069 =
     phaseId : Text;
     resourceMultiplier : Float
   };
+type PhaseOverride__841932439 =
+  {
+    crashFactor : Float;
+    laborCostOverride : ?Float;
+    phaseId : Text;
+    resourceMultiplier : Float
+  };
 type PhaseOverride__851389159 =
+  {
+    crashFactor : Float;
+    laborCostOverride : ?Float;
+    phaseId : Text;
+    resourceMultiplier : Float
+  };
+type PhaseOverride__863317293 =
   {
     crashFactor : Float;
     laborCostOverride : ?Float;
@@ -3458,6 +4511,16 @@ type PhaseSignOff__316807920 =
     signedAt : Int;
     signedBy : Text
   };
+type PhaseSignOff__405580501 =
+  {
+    var approved : Bool;
+    var comments : Text;
+    id : Text;
+    phaseId : Text;
+    role : Text;
+    signedAt : Int;
+    signedBy : Text
+  };
 type PhaseSignOff__438103826 =
   {
     var approved : Bool;
@@ -3469,6 +4532,16 @@ type PhaseSignOff__438103826 =
     signedBy : Text
   };
 type PhaseSignOff__449901423 =
+  {
+    var approved : Bool;
+    var comments : Text;
+    id : Text;
+    phaseId : Text;
+    role : Text;
+    signedAt : Int;
+    signedBy : Text
+  };
+type PhaseSignOff__472522496 =
   {
     var approved : Bool;
     var comments : Text;
@@ -3498,6 +4571,16 @@ type PhaseSignOff__504584370 =
     signedAt : Int;
     signedBy : Text
   };
+type PhaseSignOff__507799388 =
+  {
+    var approved : Bool;
+    var comments : Text;
+    id : Text;
+    phaseId : Text;
+    role : Text;
+    signedAt : Int;
+    signedBy : Text
+  };
 type PhaseSignOff__775738070 =
   {
     var approved : Bool;
@@ -3518,6 +4601,24 @@ type PhaseStandardLink__1011095083 =
     standardId : Text
   };
 type PhaseStandardLink__226784818 =
+  {
+    csiCode : Text;
+    id : Text;
+    linkedAt : Int;
+    linkedBy : Text;
+    phaseId : Text;
+    standardId : Text
+  };
+type PhaseStandardLink__284535459 =
+  {
+    csiCode : Text;
+    id : Text;
+    linkedAt : Int;
+    linkedBy : Text;
+    phaseId : Text;
+    standardId : Text
+  };
+type PhaseStandardLink__416206740 =
   {
     csiCode : Text;
     id : Text;
@@ -3571,6 +4672,15 @@ type PhaseStandardLink__771560775 =
     phaseId : Text;
     standardId : Text
   };
+type PhaseStandardLink__801204917 =
+  {
+    csiCode : Text;
+    id : Text;
+    linkedAt : Int;
+    linkedBy : Text;
+    phaseId : Text;
+    standardId : Text
+  };
 type PhaseStandardLink__855014957 =
   {
     csiCode : Text;
@@ -3615,6 +4725,8 @@ type RSMeansSettings__459017148 =
   {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
 type RSMeansSettings__482840150 =
   {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
+type RSMeansSettings__512980520 =
+  {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
 type RSMeansSettings__540019572 =
   {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
 type RSMeansSettings__590000597 =
@@ -3630,6 +4742,10 @@ type RSMeansSettings__883967107 =
 type RSMeansSettings__913258729 =
   {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
 type RSMeansSettings__953274892 = RSMeansSettings__1002379569;
+type RSMeansSettings__953634685 =
+  {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
+type RSMeansSettings__999433128 =
+  {apiEnabled : Bool; apiKey : ?Text; lastTestStatus : ?Text};
 type RSMeansSource__138006268 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__140448828 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__222707466 = {#LiveAPI; #ManualEntry; #None};
@@ -3639,12 +4755,23 @@ type RSMeansSource__242088871 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__384198061 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__408903436 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__428874323 = {#LiveAPI; #ManualEntry; #None};
+type RSMeansSource__440592268 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__660799406 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__66201341 = {#LiveAPI; #ManualEntry; #None};
+type RSMeansSource__672711682 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__821640922 = {#LiveAPI; #ManualEntry; #None};
+type RSMeansSource__889955156 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__91398553 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__918677295 = {#LiveAPI; #ManualEntry; #None};
 type RSMeansSource__971725764 = {#LiveAPI; #ManualEntry; #None};
+type ReminderState__1022116465 =
+  {
+    day26Dismissed : Bool;
+    day26EmailSent : Bool;
+    day28Dismissed : Bool;
+    day28EmailSent : Bool;
+    principal : Principal
+  };
 type ReminderState__120133945 =
   {
     day26Dismissed : Bool;
@@ -3653,7 +4780,23 @@ type ReminderState__120133945 =
     day28EmailSent : Bool;
     principal : Principal
   };
+type ReminderState__314607335 =
+  {
+    day26Dismissed : Bool;
+    day26EmailSent : Bool;
+    day28Dismissed : Bool;
+    day28EmailSent : Bool;
+    principal : Principal
+  };
 type ReminderState__378373789 =
+  {
+    day26Dismissed : Bool;
+    day26EmailSent : Bool;
+    day28Dismissed : Bool;
+    day28EmailSent : Bool;
+    principal : Principal
+  };
+type ReminderState__403070176 =
   {
     day26Dismissed : Bool;
     day26EmailSent : Bool;
@@ -3701,6 +4844,18 @@ type ReminderState__932333593 =
     day28EmailSent : Bool;
     principal : Principal
   };
+type RenewalHistoryEntry__220992455 =
+  {
+    createdAt : Int;
+    endDate : Int;
+    id : Text;
+    monthlyCharge : Nat;
+    principal : Principal;
+    startDate : Int;
+    status : {#Cancelled; #Failed; #Paid; #Pending};
+    tier : SubscriptionTier__952062647;
+    totalPaid : Nat
+  };
 type RenewalHistoryEntry__25001353 =
   {
     createdAt : Int;
@@ -3711,6 +4866,18 @@ type RenewalHistoryEntry__25001353 =
     startDate : Int;
     status : {#Cancelled; #Failed; #Paid; #Pending};
     tier : SubscriptionTier__1073361691;
+    totalPaid : Nat
+  };
+type RenewalHistoryEntry__584533314 =
+  {
+    createdAt : Int;
+    endDate : Int;
+    id : Text;
+    monthlyCharge : Nat;
+    principal : Principal;
+    startDate : Int;
+    status : {#Cancelled; #Failed; #Paid; #Pending};
+    tier : SubscriptionTier__289838109;
     totalPaid : Nat
   };
 type RenewalHistoryEntry__600376019 =
@@ -3735,6 +4902,18 @@ type RenewalHistoryEntry__619138823 =
     startDate : Int;
     status : {#Cancelled; #Failed; #Paid; #Pending};
     tier : SubscriptionTier__1061416485;
+    totalPaid : Nat
+  };
+type RenewalHistoryEntry__644010325 =
+  {
+    createdAt : Int;
+    endDate : Int;
+    id : Text;
+    monthlyCharge : Nat;
+    principal : Principal;
+    startDate : Int;
+    status : {#Cancelled; #Failed; #Paid; #Pending};
+    tier : SubscriptionTier__901508408;
     totalPaid : Nat
   };
 type RenewalHistoryEntry__711558870 =
@@ -3785,6 +4964,8 @@ type RenewalHistoryEntry__923726063 =
     tier : SubscriptionTier__78688719;
     totalPaid : Nat
   };
+type ResetCodeEntry__19481095 =
+  {code : Text; email : Text; expiresAt : Int; var used : Bool};
 type ResetCodeEntry__302700970 =
   {code : Text; email : Text; expiresAt : Int; var used : Bool};
 type ResetCodeEntry__412130552 =
@@ -3794,6 +4975,10 @@ type ResetCodeEntry__742930034 =
 type ResetCodeEntry__763347311 =
   {code : Text; email : Text; expiresAt : Int; var used : Bool};
 type ResetCodeEntry__862098393 =
+  {code : Text; email : Text; expiresAt : Int; var used : Bool};
+type ResetCodeEntry__864436704 =
+  {code : Text; email : Text; expiresAt : Int; var used : Bool};
+type ResetCodeEntry__880785027 =
   {code : Text; email : Text; expiresAt : Int; var used : Bool};
 type ResourceInternal__102780170 =
   {
@@ -3854,6 +5039,30 @@ type ResourceInternal__321524403 =
     var name : Text;
     var resourceType : ResourceType__54569669;
     var trackingLevel : TrackingLevel__594203592
+  };
+type ResourceInternal__330204983 =
+  {
+    var crewSize : ?Nat;
+    var csiCode : ?Text;
+    var hourlyRate : Float;
+    var hourlyRateSource : Text;
+    id : Text;
+    var idleTimeMode : IdleTimeMode__382200578;
+    var name : Text;
+    var resourceType : ResourceType__222928669;
+    var trackingLevel : TrackingLevel__150000032
+  };
+type ResourceInternal__350350384 =
+  {
+    var crewSize : ?Nat;
+    var csiCode : ?Text;
+    var hourlyRate : Float;
+    var hourlyRateSource : Text;
+    id : Text;
+    var idleTimeMode : IdleTimeMode__224964398;
+    var name : Text;
+    var resourceType : ResourceType__768755246;
+    var trackingLevel : TrackingLevel__22060507
   };
 type ResourceInternal__403176133 =
   {
@@ -3928,17 +5137,42 @@ type ResourceInternal__988182593 =
     var resourceType : ResourceType__778309696;
     var trackingLevel : TrackingLevel__218911718
   };
+type ResourceInternal__993127574 =
+  {
+    var crewSize : ?Nat;
+    var csiCode : ?Text;
+    var hourlyRate : Float;
+    var hourlyRateSource : Text;
+    id : Text;
+    var idleTimeMode : IdleTimeMode__863236654;
+    var name : Text;
+    var resourceType : ResourceType__502949457;
+    var trackingLevel : TrackingLevel__859459075
+  };
 type ResourceType__1012607520 = {#equipment; #labor};
 type ResourceType__178672372 = {#equipment; #labor};
+type ResourceType__222928669 = {#equipment; #labor};
 type ResourceType__446005254 = {#equipment; #labor};
+type ResourceType__502949457 = {#equipment; #labor};
 type ResourceType__54569669 = {#equipment; #labor};
 type ResourceType__612011609 = {#equipment; #labor};
 type ResourceType__667939066 = {#equipment; #labor};
 type ResourceType__676353008 = {#equipment; #labor};
 type ResourceType__753594577 = {#equipment; #labor};
+type ResourceType__768755246 = {#equipment; #labor};
 type ResourceType__778309696 = {#equipment; #labor};
 type ResourceType__788816361 = {#equipment; #labor};
 type ResourceType__832591015 = {#equipment; #labor};
+type ReviewRequest__172992402 =
+  {
+    drawingId : Text;
+    id : Text;
+    notes : Text;
+    oacFormId : ?Text;
+    requestedAt : Int;
+    requestedBy : Text;
+    status : Text
+  };
 type ReviewRequest__67999375 =
   {
     drawingId : Text;
@@ -3950,6 +5184,16 @@ type ReviewRequest__67999375 =
     status : Text
   };
 type ReviewRequest__696327488 =
+  {
+    drawingId : Text;
+    id : Text;
+    notes : Text;
+    oacFormId : ?Text;
+    requestedAt : Int;
+    requestedBy : Text;
+    status : Text
+  };
+type ReviewRequest__847331347 =
   {
     drawingId : Text;
     id : Text;
@@ -3998,6 +5242,19 @@ type SafetyStandard__282349726 =
     summary : Text;
     title : Text
   };
+type SafetyStandard__290930655 =
+  {
+    applicableTrades : [Text];
+    category : StandardCategory__537740540;
+    code : Text;
+    csiDivisions : [Text];
+    id : Text;
+    relatedStandards : [Text];
+    state : ?Text;
+    status : StandardStatus__607345966;
+    summary : Text;
+    title : Text
+  };
 type SafetyStandard__313955297 =
   {
     applicableTrades : [Text];
@@ -4011,6 +5268,19 @@ type SafetyStandard__313955297 =
     summary : Text;
     title : Text
   };
+type SafetyStandard__364802686 =
+  {
+    applicableTrades : [Text];
+    category : StandardCategory__748862440;
+    code : Text;
+    csiDivisions : [Text];
+    id : Text;
+    relatedStandards : [Text];
+    state : ?Text;
+    status : StandardStatus__276102801;
+    summary : Text;
+    title : Text
+  };
 type SafetyStandard__428789221 =
   {
     applicableTrades : [Text];
@@ -4021,6 +5291,19 @@ type SafetyStandard__428789221 =
     relatedStandards : [Text];
     state : ?Text;
     status : StandardStatus__379880317;
+    summary : Text;
+    title : Text
+  };
+type SafetyStandard__497955817 =
+  {
+    applicableTrades : [Text];
+    category : StandardCategory__487869921;
+    code : Text;
+    csiDivisions : [Text];
+    id : Text;
+    relatedStandards : [Text];
+    state : ?Text;
+    status : StandardStatus__901095717;
     summary : Text;
     title : Text
   };
@@ -4095,10 +5378,13 @@ type ScenarioId__148413003 = Text;
 type ScenarioId__35085387 = Text;
 type ScenarioId__399875984 = Text;
 type ScenarioId__447935326 = Text;
+type ScenarioId__618245451 = Text;
 type ScenarioId__6665857 = Text;
 type ScenarioId__73921463 = Text;
 type ScenarioId__791682559 = Text;
+type ScenarioId__845758144 = Text;
 type ScenarioId__872750492 = Text;
+type ScenarioId__89986592 = Text;
 type ScenarioId__900154859 = Text;
 type ScenarioId__903890577 = Text;
 type ScenarioId__908980720 = Text;
@@ -4144,6 +5430,16 @@ type Scenario__17147466 =
     phaseOverrides : [PhaseOverride__412174983];
     updatedAt : Int
   };
+type Scenario__292939474 =
+  {
+    createdAt : Int;
+    description : Text;
+    id : ScenarioId__618245451;
+    name : Text;
+    participantOverrides : [ParticipantOverride__846333704];
+    phaseOverrides : [PhaseOverride__841932439];
+    updatedAt : Int
+  };
 type Scenario__331638160 =
   {
     createdAt : Int;
@@ -4172,6 +5468,16 @@ type Scenario__435773573 =
     name : Text;
     participantOverrides : [ParticipantOverride__156826470];
     phaseOverrides : [PhaseOverride__613405069];
+    updatedAt : Int
+  };
+type Scenario__50523674 =
+  {
+    createdAt : Int;
+    description : Text;
+    id : ScenarioId__89986592;
+    name : Text;
+    participantOverrides : [ParticipantOverride__199027380];
+    phaseOverrides : [PhaseOverride__863317293];
     updatedAt : Int
   };
 type Scenario__561602695 =
@@ -4224,6 +5530,16 @@ type Scenario__815165832 =
     phaseOverrides : [PhaseOverride__1061372210];
     updatedAt : Int
   };
+type Scenario__860562827 =
+  {
+    createdAt : Int;
+    description : Text;
+    id : ScenarioId__845758144;
+    name : Text;
+    participantOverrides : [ParticipantOverride__242083892];
+    phaseOverrides : [PhaseOverride__445362827];
+    updatedAt : Int
+  };
 type Scenario__870875769 =
   {
     createdAt : Int;
@@ -4274,7 +5590,27 @@ type SessionEntry__551670883 =
     timestamp : Int;
     userAgent : Text
   };
+type SessionEntry__614349036 =
+  {
+    ipAddress : Text;
+    var isActive : Bool;
+    var lastActivity : Int;
+    principal : Principal;
+    sessionId : Text;
+    timestamp : Int;
+    userAgent : Text
+  };
 type SessionEntry__677532217 =
+  {
+    ipAddress : Text;
+    var isActive : Bool;
+    var lastActivity : Int;
+    principal : Principal;
+    sessionId : Text;
+    timestamp : Int;
+    userAgent : Text
+  };
+type SessionEntry__926528225 =
   {
     ipAddress : Text;
     var isActive : Bool;
@@ -4315,6 +5651,14 @@ type SettingsState__222449386 =
     var activeSubtopicId : ?Text;
     var projectManagerId : ?Text;
     var rsMeansSettings : RSMeansSettings__913258729
+  };
+type SettingsState__269028298 =
+  {
+    var accessControlMode : AccessControlMode__536379894;
+    var activeCategoryId : ?Text;
+    var activeSubtopicId : ?Text;
+    var projectManagerId : ?Text;
+    var rsMeansSettings : RSMeansSettings__953634685
   };
 type SettingsState__344709766 =
   {
@@ -4368,6 +5712,14 @@ type SettingsState__698700089 =
     var projectManagerId : ?Text;
     var rsMeansSettings : RSMeansSettings__217458713
   };
+type SettingsState__748703843 =
+  {
+    var accessControlMode : AccessControlMode__70850637;
+    var activeCategoryId : ?Text;
+    var activeSubtopicId : ?Text;
+    var projectManagerId : ?Text;
+    var rsMeansSettings : RSMeansSettings__512980520
+  };
 type SettingsState__900643438 =
   {
     var accessControlMode : AccessControlMode__893655360;
@@ -4375,6 +5727,14 @@ type SettingsState__900643438 =
     var activeSubtopicId : ?Text;
     var projectManagerId : ?Text;
     var rsMeansSettings : RSMeansSettings__239657467
+  };
+type SettingsState__908970413 =
+  {
+    var accessControlMode : AccessControlMode__781163482;
+    var activeCategoryId : ?Text;
+    var activeSubtopicId : ?Text;
+    var projectManagerId : ?Text;
+    var rsMeansSettings : RSMeansSettings__999433128
   };
 type SettingsState__951566291 =
   {
@@ -4385,6 +5745,14 @@ type SettingsState__951566291 =
     var rsMeansSettings : RSMeansSettings__151879350
   };
 type ShareLink__118956042 =
+  {
+    createdAt : Int;
+    id : Text;
+    isActive : Bool;
+    projectId : Text;
+    token : Text
+  };
+type ShareLink__164446276 =
   {
     createdAt : Int;
     id : Text;
@@ -4432,6 +5800,14 @@ type ShareLink__375313546 =
     projectId : Text;
     token : Text
   };
+type ShareLink__549310428 =
+  {
+    createdAt : Int;
+    id : Text;
+    isActive : Bool;
+    projectId : Text;
+    token : Text
+  };
 type ShareLink__602430991 =
   {
     createdAt : Int;
@@ -4457,6 +5833,14 @@ type ShareLink__700887224 =
     token : Text
   };
 type ShareLink__805801190 =
+  {
+    createdAt : Int;
+    id : Text;
+    isActive : Bool;
+    projectId : Text;
+    token : Text
+  };
+type ShareLink__843412475 =
   {
     createdAt : Int;
     id : Text;
@@ -4493,28 +5877,38 @@ type StandardCategory__197688064 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__242666836 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__339020452 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__374407338 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
+type StandardCategory__487869921 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__502241439 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
+type StandardCategory__537740540 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__57162319 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__624538545 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__657493069 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
+type StandardCategory__748862440 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardCategory__784082477 = {#ANSI; #IBC; #IEEE; #NCCER; #OSHA};
 type StandardStatus__144607350 = {#Active; #Superseded; #Withdrawn};
+type StandardStatus__276102801 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__379880317 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__387860550 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__4642783 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__480986596 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__482283422 = {#Active; #Superseded; #Withdrawn};
+type StandardStatus__607345966 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__743061630 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__83198650 = {#Active; #Superseded; #Withdrawn};
+type StandardStatus__901095717 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__941388450 = {#Active; #Superseded; #Withdrawn};
 type StandardStatus__955152405 = {#Active; #Superseded; #Withdrawn};
 type SubscriptionStatus__1016335999 = {#active; #cancelled; #expired; #trial};
 type SubscriptionStatus__132990154 = {#active; #cancelled; #expired; #trial};
 type SubscriptionStatus__239857489 = {#active; #cancelled; #expired; #trial};
+type SubscriptionStatus__271083093 =
+  {#active; #cancelled; #expired; #frozen; #trial};
 type SubscriptionStatus__328428147 = {#active; #cancelled; #expired; #trial};
 type SubscriptionStatus__371444102 = {#active; #cancelled; #expired; #trial};
-type SubscriptionStatus__473694714 = {#active; #cancelled; #expired; #trial};
+type SubscriptionStatus__473694714 =
+  {#active; #cancelled; #expired; #frozen; #trial};
 type SubscriptionStatus__498067092 = {#active; #cancelled; #expired; #trial};
+type SubscriptionStatus__845233380 = {#active; #cancelled; #expired; #trial};
 type SubscriptionStatus__873615610 = {#active; #cancelled; #expired; #trial};
 type SubscriptionStatus__887556880 = {#active; #cancelled; #expired; #trial};
 type SubscriptionTier__1061416485 = {#tier10year; #tier1year; #tier5year};
@@ -4522,12 +5916,17 @@ type SubscriptionTier__1073361691 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__177815850 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__214833952 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__240619719 = {#tier10year; #tier1year; #tier5year};
+type SubscriptionTier__289838109 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__356372812 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__579535863 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__78688719 = {#tier10year; #tier1year; #tier5year};
 type SubscriptionTier__875868436 = {#tier10year; #tier1year; #tier5year};
+type SubscriptionTier__901508408 = {#tier10year; #tier1year; #tier5year};
+type SubscriptionTier__952062647 = {#tier10year; #tier1year; #tier5year};
 type TimeOffset__102813615 = Int;
 type TimeOffset__1032006071 = Int;
+type TimeOffset__1048655464 = Int;
+type TimeOffset__171781351 = Int;
 type TimeOffset__200162824 = Int;
 type TimeOffset__201649352 = Int;
 type TimeOffset__266112525 = Int;
@@ -4543,10 +5942,13 @@ type TimeOffset__804033830 = Int;
 type TimeOffset__813687306 = Int;
 type TimeOffset__861728693 = Int;
 type TimeOffset__867526142 = Int;
+type TimeOffset__923253222 = Int;
 type TimeOffset__951093125 = Int;
 type TimeOffset__989966907 = Int;
 type TrackingLevel__1031867188 = {#crew; #individual};
+type TrackingLevel__150000032 = {#crew; #individual};
 type TrackingLevel__218911718 = {#crew; #individual};
+type TrackingLevel__22060507 = {#crew; #individual};
 type TrackingLevel__290051564 = {#crew; #individual};
 type TrackingLevel__394024355 = {#crew; #individual};
 type TrackingLevel__489978510 = {#crew; #individual};
@@ -4555,7 +5957,16 @@ type TrackingLevel__710233341 = {#crew; #individual};
 type TrackingLevel__772875649 = {#crew; #individual};
 type TrackingLevel__845076531 = {#crew; #individual};
 type TrackingLevel__854495430 = {#crew; #individual};
+type TrackingLevel__859459075 = {#crew; #individual};
 type TrackingLevel__905775121 = {#crew; #individual};
+type UserRecord__138210116 =
+  {
+    email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text;
+    salt : Text
+  };
 type UserRecord__154942126 =
   {
     email : Text;
@@ -4581,6 +5992,22 @@ type UserRecord__343962737 =
     salt : Text
   };
 type UserRecord__441343983 =
+  {
+    email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text;
+    salt : Text
+  };
+type UserRecord__445227454 =
+  {
+    email : Text;
+    var name : Text;
+    var passwordHash : Text;
+    var phone : Text;
+    salt : Text
+  };
+type UserRecord__781109363 =
   {
     email : Text;
     var name : Text;
@@ -4631,6 +6058,8 @@ type UserSubscription__116942855 =
     cancelledAt : ?Int;
     chargeScheduledAt : Int;
     currentPlan : SubscriptionTier__1061416485;
+    frozenAt : ?Int;
+    frozenReason : ?Text;
     status : SubscriptionStatus__473694714;
     stripeCustomerId : ?Text;
     stripePaymentMethodId : ?Text;
@@ -4653,6 +6082,21 @@ type UserSubscription__146407185 =
     subscriptionExpiresAt : ?Int;
     subscriptionStartAt : ?Int;
     tier : SubscriptionTier__1073361691;
+    trialStartAt : Int;
+    userId : Principal
+  };
+type UserSubscription__244670959 =
+  {
+    cancelledAt : ?Int;
+    chargeScheduledAt : Int;
+    currentPlan : SubscriptionTier__289838109;
+    status : SubscriptionStatus__845233380;
+    stripeCustomerId : ?Text;
+    stripePaymentMethodId : ?Text;
+    stripeSubscriptionId : ?Text;
+    subscriptionExpiresAt : ?Int;
+    subscriptionStartAt : ?Int;
+    tier : SubscriptionTier__289838109;
     trialStartAt : Int;
     userId : Principal
   };
@@ -4716,6 +6160,23 @@ type UserSubscription__552279357 =
     trialStartAt : Int;
     userId : Principal
   };
+type UserSubscription__946635590 =
+  {
+    cancelledAt : ?Int;
+    chargeScheduledAt : Int;
+    currentPlan : SubscriptionTier__901508408;
+    frozenAt : ?Int;
+    frozenReason : ?Text;
+    status : SubscriptionStatus__271083093;
+    stripeCustomerId : ?Text;
+    stripePaymentMethodId : ?Text;
+    stripeSubscriptionId : ?Text;
+    subscriptionExpiresAt : ?Int;
+    subscriptionStartAt : ?Int;
+    tier : SubscriptionTier__901508408;
+    trialStartAt : Int;
+    userId : Principal
+  };
 type UserSubscription__965332587 =
   {
     cancelledAt : ?Int;
@@ -4741,6 +6202,15 @@ type VerificationDocument__103107545 =
     uploadedAt : Int
   };
 type VerificationDocument__1058425816 =
+  {
+    adminReviewStatus : Text;
+    documentType : Text;
+    storageKey : Text;
+    stripeVerificationSessionId : ?Text;
+    stripeVerificationStatus : Text;
+    uploadedAt : Int
+  };
+type VerificationDocument__10817443 =
   {
     adminReviewStatus : Text;
     documentType : Text;
@@ -4785,6 +6255,15 @@ type VerificationDocument__569761283 =
     stripeVerificationStatus : Text;
     uploadedAt : Int
   };
+type VerificationDocument__572430573 =
+  {
+    adminReviewStatus : Text;
+    documentType : Text;
+    storageKey : Text;
+    stripeVerificationSessionId : ?Text;
+    stripeVerificationStatus : Text;
+    uploadedAt : Int
+  };
 type VerificationDocument__640566887 =
   {
     adminReviewStatus : Text;
@@ -4803,9 +6282,22 @@ type VerificationDocument__708497966 =
     stripeVerificationStatus : Text;
     uploadedAt : Int
   };
+type VerificationDocument__813936270 =
+  {
+    adminReviewStatus : Text;
+    documentType : Text;
+    storageKey : Text;
+    stripeVerificationSessionId : ?Text;
+    stripeVerificationStatus : Text;
+    uploadedAt : Int
+  };
 type ZoomSettings__1000194643 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
+type ZoomSettings__1019551735 =
+  {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
 type ZoomSettings__103599831 =
+  {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
+type ZoomSettings__1073379469 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
 type ZoomSettings__149096679 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
@@ -4820,6 +6312,8 @@ type ZoomSettings__458031023 =
 type ZoomSettings__635358520 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
 type ZoomSettings__671279070 =
+  {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
+type ZoomSettings__692095270 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
 type ZoomSettings__824342073 =
   {clientId : Text; clientSecret : Text; fixedZoomLinks : [(Text, Text)]};
@@ -4863,7 +6357,13 @@ type ZoomSettings__95371380 =
   "20260524_200000_AddPayout" :
     (old : OldActor__56807936) -> NewActor__111759787;
   "20260524_300000_AddDrawings" :
-    (old : OldActor__204863052) -> NewActor__915055824
+    (old : OldActor__204863052) -> NewActor__915055824;
+  "20260526_000000_AddLoginEmails" :
+    (old : OldActor__276232375) -> NewActor__906326317;
+  "20260527_000000_AddCancellationAndFreeze" :
+    (old : OldActor__836269021) -> NewActor__1063031164;
+  "20260527_120000_ClearControllerPassword" :
+    (old : OldActor__827239671) -> NewActor__1021225815
 }
 actor  {
   stable var _controller : Principal;
@@ -4883,6 +6383,11 @@ actor  {
       var size : Nat__490723111
     };
   stable bankAccountStore : {var bankAccount : ?BankAccount__91059008};
+  stable cancellationRequests :
+    {
+      var root : Node__46230540<Text, CancellationRequest__930179577>;
+      var size : Nat__490723111
+    };
   stable certStore :
     {
       var root : Node__46230540<Text, NCCERCertification__354438939>;
@@ -4907,7 +6412,12 @@ actor  {
       var size : Nat__490723111
     };
   stable controllerProfile :
-    {var email : Text; var name : Text; var phone : Text};
+    {
+      var email : Text;
+      var name : Text;
+      var passwordHash : Text;
+      var phone : Text
+    };
   stable documentStore :
     {
       var root :
@@ -4950,6 +6460,12 @@ actor  {
     {
       var root : Node__46230540<Text, PhaseStandardLink__909984136>;
       var size : Nat__490723111
+    };
+  stable loginEmails :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Text]];
+      var elementIndex : Nat__490723111
     };
   stable loginSessions :
     {
